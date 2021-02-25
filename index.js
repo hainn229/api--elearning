@@ -8,9 +8,7 @@ const mongoose = require('mongoose');
 const router = require('./src/routers/index');
 const passport = require('passport');
 
-const PORT = process.env.PORT || 5000;
-
-mongoose.connect('mongodb+srv://UN_admin_elearning1:PW_admin_elearning1@elearning.emrrd.mongodb.net/elearningDB?retryWrites=true&w=majority', {
+mongoose.connect(config.get('app.MONGODB_SRV'), {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
@@ -32,13 +30,13 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(cors());
 app.use(logger());
-// app.use(router);
+app.use(router);
 
 app.get('/', (req, res) => {
     return res.send('Hi there!');
 });
 
-app.listen(PORT, () => {
-    console.log("server listening on port " + PORT);
+app.listen(PORT=config.get('app.PORT'), () => {
+    console.log("Server running on port " + PORT);
 });
 module.exports = app;
