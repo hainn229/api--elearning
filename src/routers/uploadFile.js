@@ -5,93 +5,88 @@ const firebase = require('../../config/firebase');
 const multer = require('multer');
 
 
-const storageImages = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: (req, file, callback) => {
-        return callback(null, '/images');
-    }
-});
-
-const storageVideos = multer.diskStorage({
-    destination: (req, file, callback) => {
-        return callback(null, '/videos');
+        return callback(null, '/tmp/')
     }
 });
 
 const uploadFileImage = multer({
-    storage: storageImages,
+    storage: storage,
     limits: {
-        fileSize: 1024 * 1024 * 5 // limit file size 5MB
+        fileSize: 1024 * 1024 * 5, // limit file size 5MB
     },
     fileFilter: (req, file, callback) => {
         if (
-            file.mimetype === 'image/png' ||
-            file.mimetype === 'image/jpg' ||
-            file.mimetype === 'image/jpeg'
+            file.mimetype === "image/png" ||
+            file.mimetype === "image/jpg" ||
+            file.mimetype === "image/jpeg"
         ) {
             return callback(null, true);
         } else {
             callback(null, false);
-            return callback(res.status(400).json({
-                message: 'Only .png, .jpg and .jpeg format allowed!'
-            }));
-        };
-    }
+            return callback(
+                res.status(400).json({
+                    message: "Only .png, .jpg and .jpeg format allowed!",
+                })
+            );
+        }
+    },
 });
 
 const uploadFileVideo = multer({
-    storage: storageVideos,
+    storage: storage,
     limits: {
-        fileSize: 1024 * 1024 * 20 // limit file size 20MB
+        fileSize: 1024 * 1024 * 20, // limit file size 20MB
     },
     fileFilter: (req, file, callback) => {
-        if (
-            file.mimetype === 'video/mp4' ||
-            file.mimetype === 'video/webm'
-        ) {
+        if (file.mimetype === "video/mp4" || file.mimetype === "video/webm") {
             return callback(null, true);
         } else {
-            callback(null, false)
-            return callback(res.status(400).json({
-                message: 'Only .mp4 and .webm format allowed!'
-            }));
-        };
-    }
+            callback(null, false);
+            return callback(
+                res.status(400).json({
+                    message: "Only .mp4 and .webm format allowed!",
+                })
+            );
+        }
+    },
 });
 
-router.post('/images', uploadFileImage.single('image'), async (req, res) => {
+router.post("/images", uploadFileImage.single("image"), async (req, res) => {
     try {
         await firebase.bucket.upload(req.file.path, {
             metadata: {
-                contentType: req.file.mimetype
+                contentType: req.file.mimetype,
             },
-            destination: req.file.originalname
+            destination: `images/${req.file.originalname}`,
         });
         fs.unlinkSync(req.file.path);
         return res.status(200).json({
-            url: `https://storage.googleapis.com/${firebase.bucket.name}/${req.file.originalname}`
+            url: `https://storage.googleapis.com/${firebase.bucket.name}/${req.file.originalname}`,
         });
     } catch (err) {
         return res.status(500).json({
-            message: err.message
+            message: err.message,
         });
     }
 });
 
-router.post('/videos', uploadFileVideo.single('video'), async (req, res) => {
+router.post("/videos", uploadFileVideo.single("video"), async (req, res) => {
     try {
         await firebase.bucket.upload(req.file.path, {
             metadata: {
-                contentType: req.file.mimetype
+                contentType: req.file.mimetype,
             },
-            destination: req.file.originalname
+            destination: `videos/${req.file.originalname}`,
         });
         fs.unlinkSync(req.file.path);
         return res.status(200).json({
-            url: `https://storage.googleapis.com/${firebase.bucket.name}/${req.file.originalname}`
+            url: `https://storage.googleapis.com/${firebase.bucket.name}/${req.file.originalname}`,
         });
     } catch (err) {
         return res.status(500).json({
-            message: err.message
+            message: err.message,
         });
     }
 });
