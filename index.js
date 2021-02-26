@@ -18,7 +18,7 @@ mongoose.connect(config.get('app.MONGODB_SRV'), {
         if (err) {
             console.log(err);
         }
-        console.log("Connection database successfully");
+        console.log("Connect to database successfully");
     }
 );
 

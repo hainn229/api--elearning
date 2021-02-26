@@ -4,7 +4,7 @@ module.exports = {
         MONGODB_SRV: 'mongodb+srv://UN_admin_elearning1:PW_admin_elearning1@elearning.emrrd.mongodb.net/elearningDB?retryWrites=true&w=majority'
     },
     firebase: {
-        FIREBASE_ADMIN_SDK: {
+        ADMIN_SDK: {
             "type": "service_account",
             "project_id": "elearning-ed74f",
             "private_key_id": "c3e832f5f3bcc8c672b456b2e333962e9ee7b17a",
