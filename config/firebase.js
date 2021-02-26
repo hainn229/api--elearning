@@ -1,15 +1,14 @@
-const config = require('config');
-const admin = require('firebase-admin');
-
+const admin = require("firebase-admin");
+const firebaseAccount = require("./elearning-305907-firebase-adminsdk-h7r3m-6301490520.json");
 // Initialize firebase admin SDK
 admin.initializeApp({
-    credential: admin.credential.cert(config.get('firebase.ADMIN_SDK')),
-    storageBucket: config.get('firebase.STORAGE_BUCKET'),
+  credential: admin.credential.cert(firebaseAccount),
+  storageBucket: "gs://elearning-305907.appspot.com",
 });
 
 // Cloud storage
 const bucket = admin.storage().bucket();
 
 module.exports = {
-    bucket
+  bucket,
 };
