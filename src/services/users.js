@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 
 // Jsonwebtoken
-const Token = (id, email, role) => {
+module.exports.Token = (id, email, role) => {
     return jwt.sign({
         id: id,
         iss: email, // issuer of the jwt.
@@ -47,7 +47,7 @@ module.exports.login = async (email, password) => {
     if (user && match) {
         return {
             userInfo: user,
-            token: Token(user.email, user.password, user.role)
+            token: this.Token(user.email, user.password, user.role)
         };
     };
 };
@@ -74,3 +74,19 @@ module.exports.resetPassword = async (email, updatePassword) => {
 };
 
 // Passport
+module.exports.findUserByGoogleId = async (id) => {
+    const user = await UsersModel.findOne({
+        googleId: id
+    });
+    return user;
+};
+
+passport.serializeUser((user, done) => {
+    done(null, user);
+});
+
+passport.deserializeUser((id, done) => {
+    UsersModel.findById(id).then((user) => {
+        done(null, user);
+    });
+});

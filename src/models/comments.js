@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const ReviewsSchema = new mongoose.Schema({
+const CommentsSchema = new mongoose.Schema({
     course_id: {
         type: mongoose.Types.ObjectId,
         ref: 'courses',
@@ -24,8 +24,8 @@ const ReviewsSchema = new mongoose.Schema({
     timestamps: true
 });
 
-ReviewsSchema.index({
+CommentsSchema.index({
     '$**': 'text'
 });
-const ReviewsModel = mongoose.model('courses', ReviewsSchema);
-module.exports = ReviewsModel;
+const CommentsModel = mongoose.model('comments', CommentsSchema);
+module.exports = CommentsModel;

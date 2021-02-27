@@ -5,13 +5,13 @@ const UsersSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    displayName: {
+    full_name: {
         type: String,
         required: true
     },
     password: {
         type: String,
-        required: true
+        // required: true
     },
     gender: {
         type: String
@@ -26,6 +26,9 @@ const UsersSchema = new mongoose.Schema({
         default: 'student'
     },
     avatarUrl: {
+        type: String
+    },
+    googleId: {
         type: String
     }
 }, {

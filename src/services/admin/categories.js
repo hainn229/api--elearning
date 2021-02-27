@@ -1,16 +1,18 @@
 const CategoriesModel = require('../../models/categories');
 
 module.exports.getCategoriesWithPages = async (currentPage, perPage, keywords) => {
-    const categories = await CategoriesModel.countDocuments();
     const skip = (currentPage - 1) * perPage;
-
-    const docs = await CategoriesModel.find({
+    const query = CategoriesModel.find({
         cat_name: {
             $regex: keywords
         }
-    }).skip(skip).limit(perPage).sort({
+    });
+
+    const docs = await query.skip(skip).limit(perPage).sort({
         _id: -1
     });
+    
+    const categories = await query.countDocuments();
 
     return {
         docs: docs,
@@ -29,19 +31,19 @@ module.exports.addCategory = (catName) => {
     return newCategory.save();
 };
 
-module.exports.detailsCategory = (catId) => {
-    return CategoriesModel.findById(catId);
+module.exports.detailsCategory = (id) => {
+    return CategoriesModel.findById(id);
 };
 
-module.exports.updateCategory = async (catId, dataUpdate) => {
+module.exports.updateCategory = async (id, dataUpdate) => {
     return CategoriesModel.updateOne({
-        _id: catId
+        _id: id
     }, dataUpdate);
 };
 
-module.exports.deleteCategory = (catId) => {
+module.exports.deleteCategory = (id) => {
     return CategoriesModel.deleteOne({
-        _id: catId
+        _id: id
     });
 };
 

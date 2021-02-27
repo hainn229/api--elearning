@@ -70,9 +70,9 @@ router.post('/add', async (req, res) => {
     };
 });
 
-router.get('/:catId', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const category = await detailsCategory(req.params.catId);
+        const category = await detailsCategory(req.params.id);
         return res.status(200).json({
             category: category
         });
@@ -83,7 +83,7 @@ router.get('/:catId', async (req, res) => {
     };
 });
 
-router.put('/:catId', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         const dataInput = joi.object({
             cat_name: joi.string().pattern(RegExp('^[A-Za-z0-9]*$')).required()
@@ -104,7 +104,7 @@ router.put('/:catId', async (req, res) => {
             });
         }
 
-        await updateCategory(req.params.catId, updateData.value);
+        await updateCategory(req.params.id, updateData.value);
         return res.status(200).json({
             message: 'The category name have been updated successfully!'
         });
@@ -115,9 +115,9 @@ router.put('/:catId', async (req, res) => {
     };
 });
 
-router.delete('/:catId', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
-        await deleteCategory(req.params.catId);
+        await deleteCategory(req.params.id);
         return res.status(200).json({
             message: 'Delete category successfully!'
         });

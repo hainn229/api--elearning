@@ -1,14 +1,18 @@
 const express = require('express');
 const router = express.Router();
+const axios = require('axios');
+const joi = require('joi');
 const {
+    Token,
     login,
     register,
-    findUserByEmail
+    findUserByEmail,
+    findUserByGoogleId
 } = require('../services/users');
-const joi = require('joi');
 const {
     checkAuth
 } = require('../middlewares/auth');
+const UsersModel = require('../models/users');
 
 router.get('/myAccount', checkAuth(true), (req, res) => {
     res.status(200).json(req.user);
@@ -41,7 +45,7 @@ router.post('/register', async (req, res) => {
     try {
         const dataInput = joi.object({
             email: joi.string().email().required(),
-            displayName: joi.string().required(),
+            full_name: joi.string().required(),
             password: joi.string().required(),
             gender: joi.string().required(),
             date_of_birth: joi.date().required(),
@@ -71,6 +75,46 @@ router.post('/register', async (req, res) => {
             message: err.message
         });
     }
+});
+
+router.post('/google', async (req, res) => {
+    try {
+        const response = await axios.default.get(
+            `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${req.body.access_token}`
+        );
+        if (response.data) {
+            const user = await findUserByGoogleId(response.data.id);
+            if (user != null) {
+                const token = Token(user._id, user.email, user.role);
+                return res.status(200).json({
+                    user: user,
+                    token: token
+                });
+            } else {
+                const newUser = new UsersModel({
+                    email: response.data.email,
+                    full_name: response.data.name,
+                    avatarUrl: response.data.picture,
+                    googleId: response.data.id
+                });
+
+                const user = await newUser.save();
+                const token = Token(
+                    user._id,
+                    user.email,
+                    user.role
+                );
+                return res.status(200).json({
+                    user: user,
+                    token: token
+                });
+            };
+        };
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        });
+    };
 });
 
 module.exports = router;
