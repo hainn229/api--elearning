@@ -11,8 +11,12 @@ const CoursesSchema = new mongoose.Schema({
     },
     level: {
         type: String,
-        enum: ['beginning', 'intermediate', 'advanced', 'all level'],
-        default: 'all level'
+        enum: ['Beginning level', 'Intermediate level', 'Advanced level', 'All levels'],
+        default: 'All levels'
+    },
+    tutor_id: {
+        type: mongoose.Types.ObjectId,
+        ref: 'users'
     },
     cat_id: {
         type: mongoose.Types.ObjectId,

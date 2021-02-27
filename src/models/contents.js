@@ -11,6 +11,10 @@ const ContentsSchema = new mongoose.Schema({
     url: {
         type: String,
         required: true
+    }, 
+    course_id: {
+        type: mongoose.Types.ObjectId,
+        ref: 'courses'
     }
 }, {
     timestamp: true

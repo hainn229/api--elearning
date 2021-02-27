@@ -5,10 +5,10 @@ const WishlistSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'courses'
     },
-    user_id: {
+    user_id: [{
         type: mongoose.Types.ObjectId,
         ref: 'users'
-    }
+    }]
 }, {
     timestamps: true
 });

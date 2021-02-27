@@ -49,8 +49,7 @@ router.post('/register', async (req, res) => {
             password: joi.string().required(),
             gender: joi.string().required(),
             date_of_birth: joi.date().required(),
-            role: joi.string().required(),
-            avatarUrl: joi.string()
+            avatarUrl: joi.string(),
         }).unknown();
 
         const userInput = await dataInput.validateAsync(req.body);
@@ -95,7 +94,10 @@ router.post('/google', async (req, res) => {
                     email: response.data.email,
                     full_name: response.data.name,
                     avatarUrl: response.data.picture,
+                    gender: null,
+                    date_of_birth: null,
                     googleId: response.data.id
+                    // password...
                 });
 
                 const user = await newUser.save();

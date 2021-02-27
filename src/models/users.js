@@ -11,7 +11,6 @@ const UsersSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        // required: true
     },
     gender: {
         type: String
@@ -21,15 +20,15 @@ const UsersSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        required: true,
-        enum: ['admin', 'student', 'tutor'],
-        default: 'student'
+        enum: ['ADMIN', 'USER'],
+        default: 'USER'
     },
     avatarUrl: {
         type: String
     },
     googleId: {
-        type: String
+        type: String,
+        default: null
     }
 }, {
     timestamps: true
