@@ -16,7 +16,7 @@ const CommentsSchema = new mongoose.Schema({
         enum: [1, 2, 3, 4, 5],
         default: 1
     },
-    content: {
+    description: {
         type: String,
         required: true
     }

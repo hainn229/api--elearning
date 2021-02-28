@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const WishlistSchema = new mongoose.Schema({
+const WishlistsSchema = new mongoose.Schema({
     course_id: {
         type: mongoose.Types.ObjectId,
         ref: 'courses'
@@ -13,8 +13,8 @@ const WishlistSchema = new mongoose.Schema({
     timestamps: true
 });
 
-WishlistSchema.index({
+WishlistsSchema.index({
     '$**': 'text'
 });
-const WishlistModel = mongoose.model('wishlist', WishlistSchema);
-module.exports = WishlistModel;
+const WishlistsModel = mongoose.model('wishlist', WishlistsSchema);
+module.exports = WishlistsModel;

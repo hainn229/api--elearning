@@ -1,14 +1,14 @@
 const CategoriesModel = require('../../models/categories');
 
-module.exports.getCategoriesWithPages = async (currentPage, perPage, keywords) => {
-    const skip = (currentPage - 1) * perPage;
+module.exports.getCategoriesWithPages = async (currentPage, limitPage, keywords) => {
+    const skip = (currentPage - 1) * limitPage;
     const query = CategoriesModel.find({
         cat_name: {
             $regex: keywords
         }
     });
 
-    const docs = await query.skip(skip).limit(perPage).sort({
+    const docs = await query.skip(skip).limit(limitPage).sort({
         _id: -1
     });
     
@@ -18,7 +18,7 @@ module.exports.getCategoriesWithPages = async (currentPage, perPage, keywords) =
         docs: docs,
         currentPage: currentPage,
         totalItems: categories,
-        perPage: perPage
+        limitPage: limitPage
     };
 };
 
@@ -26,9 +26,9 @@ module.exports.getCategories = async () => {
     return await CategoriesModel.find({}, ['_id', 'cat_name'])
 };
 
-module.exports.addCategory = (catName) => {
+module.exports.addCategory = async (catName) => {
     const newCategory = new CategoriesModel(catName);
-    return newCategory.save();
+    return await newCategory.save();
 };
 
 module.exports.detailsCategory = (id) => {

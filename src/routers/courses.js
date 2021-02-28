@@ -2,23 +2,25 @@ const express = require('express');
 const router = express.Router();
 const joi = require('joi');
 const {
-    getCategoriesWithPages,
-    getCategories,
-    addCategory,
-    detailsCategory,
-    updateCategory,
-    deleteCategory,
-    findCategoryByName,
-} = require('../services/admin/categories');
+    getCoursesWithPages,
+    getCourses,
+    addCourse,
+    detailsCourse,
+    updateCourse,
+    deleteCourse,
+    findCourseByTitle
+} = require('../services/users/courses');
 
 router.get('/', async (req, res) => {
     try {
         const currentPage = parseInt(req.query.currentPage) || 1;
         const limitPage = parseInt(req.query.limitPage) || 5;
         const keywords = req.query.keywords || '';
-        const categories = await getCategoriesWithPages(currentPage, limitPage, keywords);
+        const tutor = req.query.tutor || [];
+        const category = req.query.category || [];
+        const courses = await getCoursesWithPages(currentPage, limitPage, keywords, tutor, category);
         return res.status(200).json({
-            categories: categories
+            courses: courses
         });
     } catch (err) {
         return res.status(500).json({
@@ -29,9 +31,9 @@ router.get('/', async (req, res) => {
 
 router.get('/all', async (req, res) => {
     try {
-        const categories = await getCategories();
+        const courses = await getCourses();
         return res.status(200).json({
-            categories: categories
+            courses: courses
         })
     } catch (err) {
         return res.status(500).json({
@@ -43,25 +45,29 @@ router.get('/all', async (req, res) => {
 router.post('/add', async (req, res) => {
     try {
         const dataInput = joi.object({
-            cat_name: joi.string().pattern(RegExp('^[A-Za-z0-9]*$')).required()
+            course_title: joi.string().pattern(RegExp('^[A-Za-z0-9]*$')).required(),
+            price: joi.number().required(),
+            tutor_id: joi.string().required(),
+            cat_id: joi.string().required(),
+            description: joi.string()
         });
 
         const newData = await dataInput.validate(req.body);
         if (newData.err) {
             return res.status(400).json({
-                message: 'Please enter a valid category name!'
+                message: 'Please enter a valid course title!'
             });
         }
 
-        const category = await findCategoryByName(req.body.cat_name);
-        if (category) {
+        const course = await findCourseByTitle(req.body.course_title);
+        if (course) {
             return res.status(200).json({
-                message: 'The category name is already exist!'
+                message: 'The course title is already exist!'
             });
         }
-        await addCategory(newData.value);
+        await addCourse(newData.value);
         return res.status(200).json({
-            message: 'New category have been created successfully!'
+            message: 'New course have been created successfully!'
         });
     } catch (err) {
         return res.status(500).json({
@@ -72,9 +78,9 @@ router.post('/add', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const category = await detailsCategory(req.params.id);
+        const course = await detailsCourse(req.params.id);
         return res.status(200).json({
-            category: category
+            course: course
         });
     } catch (err) {
         return res.status(500).json({
@@ -86,27 +92,31 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const dataInput = joi.object({
-            cat_name: joi.string().pattern(RegExp('^[A-Za-z0-9]*$')).required()
+            course_title: joi.string().pattern(RegExp('^[A-Za-z0-9]*$')).required(),
+            price: joi.number().required(),
+            tutor_id: joi.string().required(),
+            cat_id: joi.string().required(),
+            description: joi.string()
         });
 
         const updateData = await dataInput.validate(req.body);
 
         if (updateData.err) {
             return res.status(400).json({
-                message: 'Please enter a valid category name!'
+                message: 'Please enter a valid course title!'
             })
         }
 
-        const category = await findCategoryByName(req.body.cat_name);
-        if (category) {
+        const course = await findCourseByTitle(req.body.course_title);
+        if (course) {
             return res.status(200).json({
-                message: 'The category name is already exist!'
+                message: 'The course title is already exist!'
             });
         }
 
-        await updateCategory(req.params.id, updateData.value);
+        await updateCourse(req.params.id, updateData.value);
         return res.status(200).json({
-            message: 'The category have been updated successfully!'
+            message: 'The course have been updated successfully!'
         });
     } catch (err) {
         return res.status(500).json({
@@ -117,7 +127,7 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        await deleteCategory(req.params.id);
+        await deleteCourse(req.params.id);
         return res.status(200).json({
             message: 'Delete category successfully!'
         });

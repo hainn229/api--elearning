@@ -7,7 +7,7 @@ const CoursesSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        default: 0
+        required: true
     },
     level: {
         type: String,
@@ -25,7 +25,7 @@ const CoursesSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true
+        // required: true
     },
     num_of_subscribers: {
         type: Number,
