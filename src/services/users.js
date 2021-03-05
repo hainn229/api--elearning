@@ -75,7 +75,7 @@ module.exports.login = async (email, password) => {
     if (user && match == true) {
         return {
             userInfo: user,
-            token: this.Token(user.email, user.password, user.role)
+            token: this.Token(user._id, user.email, user.role)
         };
     };
 };
