@@ -23,6 +23,34 @@ module.exports.verifyToken = (token) => {
 };
 
 // Users
+
+module.exports.getUsersWithPages = async (currentPage, limitPage, keywords) => {
+    const skip = (currentPage - 1) * limitPage;
+    const query = UsersModel.find({
+        full_name: {
+            $regex: keywords
+        }
+    });
+
+    const docs = await query.skip(skip).limit(limitPage).sort({
+        _id: -1
+    });
+    
+    const users = await query.countDocuments();
+
+    return {
+        docs: docs,
+        currentPage: currentPage,
+        totalItems: users,
+        limitPage: limitPage
+    };
+};
+
+module.exports.getUsers = async () => {
+    const users = await UsersModel.find();
+    return users;
+};
+
 module.exports.register = async (userInfo) => {
     try {
         const salt = await bcrypt.genSalt(10);
@@ -44,7 +72,7 @@ module.exports.login = async (email, password) => {
         email: email
     });
     const match = await bcrypt.compare(password, user.password);
-    if (user && match) {
+    if (user && match == true) {
         return {
             userInfo: user,
             token: this.Token(user.email, user.password, user.role)

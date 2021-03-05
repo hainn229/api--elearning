@@ -6,7 +6,7 @@ const {
     addComment,
     updateComment,
     deleteComment,
-} = require('../services/users/comments');
+} = require('../services/comments');
 
 router.get('/:courseId', async (req, res) => {
     try {

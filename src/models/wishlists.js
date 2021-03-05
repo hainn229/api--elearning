@@ -5,10 +5,10 @@ const WishlistsSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'courses'
     },
-    user_id: [{
+    user_id: {
         type: mongoose.Types.ObjectId,
         ref: 'users'
-    }]
+    }
 }, {
     timestamps: true
 });
@@ -16,5 +16,5 @@ const WishlistsSchema = new mongoose.Schema({
 WishlistsSchema.index({
     '$**': 'text'
 });
-const WishlistsModel = mongoose.model('wishlist', WishlistsSchema);
+const WishlistsModel = mongoose.model('wishlists', WishlistsSchema);
 module.exports = WishlistsModel;

@@ -8,6 +8,8 @@ const categories = require('./categories');
 const courses = require('./courses');
 const contents = require('./contents');
 const comments = require('./comments');
+const wishlists = require('./wishlists');
+const libraries = require('./libraries');
 
 router.use('/auth', auth);
 router.use('/users', users);
@@ -16,5 +18,7 @@ router.use('/categories', categories);
 router.use('/courses', courses);
 router.use('/contents', contents);
 router.use('/comments', comments);
+router.use('/wishlists', wishlists);
+router.use('/libraries', libraries);
 
 module.exports = router;

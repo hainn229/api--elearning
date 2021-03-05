@@ -1,4 +1,4 @@
-const CategoriesModel = require('../../models/categories');
+const CategoriesModel = require('../models/categories');
 
 module.exports.getCategoriesWithPages = async (currentPage, limitPage, keywords) => {
     const skip = (currentPage - 1) * limitPage;

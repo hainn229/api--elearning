@@ -3,7 +3,7 @@ const router = express.Router();
 const {
     getUsersWithPages,
     getUsers
-} = require('../services/admin/users');
+} = require('../services/users');
 const {
     checkAuth
 } = require('../middlewares/auth');

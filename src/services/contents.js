@@ -1,4 +1,4 @@
-const ContentsModel = require('../../models/contents');
+const ContentsModel = require('../models/contents');
 
 module.exports.getContent = async (courseId) => {
     return await ContentsModel.find({
@@ -24,11 +24,5 @@ module.exports.updateContent = async (id, dataUpdate) => {
 module.exports.deleteContent = (id) => {
     return ContentsModel.deleteOne({
         _id: id
-    });
-};
-
-module.exports.findContentByTitle = (title) => {
-    return ContentsModel.findOne({
-        title: title
     });
 };

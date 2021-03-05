@@ -1,4 +1,4 @@
-const CoursesModel = require('../../models/courses');
+const CoursesModel = require('../models/courses');
 
 module.exports.getCoursesWithPages = async (currentPage, limitPage, keywords, tutor, category) => {
     const skip = (currentPage - 1) * limitPage;

@@ -13,7 +13,7 @@ const OrdersSchema = new mongoose.Schema({
                 required: true,
                 ref: 'users',
             }
-        }
+        }        
     ],
     total: {
         type: Number,

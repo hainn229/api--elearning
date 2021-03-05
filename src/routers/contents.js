@@ -6,9 +6,8 @@ const {
     addContent,
     detailsContent,
     updateContent,
-    deleteContent,
-    findContentByTitle,
-} = require('../services/users/contents');
+    deleteContent
+} = require('../services/contents');
 
 router.get('/:courseId', async (req, res)=> {
     try {

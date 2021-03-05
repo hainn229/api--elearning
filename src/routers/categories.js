@@ -9,7 +9,7 @@ const {
     updateCategory,
     deleteCategory,
     findCategoryByName,
-} = require('../services/admin/categories');
+} = require('../services/categories');
 
 router.get('/', async (req, res) => {
     try {

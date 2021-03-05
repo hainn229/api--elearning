@@ -24,7 +24,8 @@ const UsersSchema = new mongoose.Schema({
         default: 'USER'
     },
     avatarUrl: {
-        type: String
+        type: String,
+        default: null
     },
     googleId: {
         type: String,

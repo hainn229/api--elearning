@@ -1,4 +1,4 @@
-const CommentsModel = require('../../models/comments');
+const CommentsModel = require('../models/comments');
 
 module.exports.getComments = async (courseId, currentPage, limitPage) => {
     const skip = (currentPage - 1) * limitPage;
