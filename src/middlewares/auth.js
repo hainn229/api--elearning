@@ -19,7 +19,7 @@ module.exports.checkAuth = (required) => {
             UsersModel.findOne({
                 email: email
             }).exec().then((user) => {
-                req.user = user.doc;
+                req.user = user;
                 next();
             }).catch(() => {
                 res.status(401).send('Could not find user!');
