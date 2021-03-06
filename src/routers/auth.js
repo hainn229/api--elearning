@@ -47,8 +47,8 @@ router.post('/register', async (req, res) => {
             full_name: joi.string().required(),
             email: joi.string().email().required(),
             password: joi.string().required(),
-            date_of_birth: joi.date().required(),
-            avatarUrl: joi.string(),
+            // date_of_birth: joi.date().required(),
+            // avatarUrl: joi.string(),
         }).unknown();
 
         const userInput = await dataInput.validateAsync(req.body);
