@@ -44,8 +44,8 @@ router.post('/login', async (req, res, next) => {
 router.post('/register', async (req, res) => {
     try {
         const dataInput = joi.object({
-            email: joi.string().email().required(),
             full_name: joi.string().required(),
+            email: joi.string().email().required(),
             password: joi.string().required(),
             date_of_birth: joi.date().required(),
             avatarUrl: joi.string(),
