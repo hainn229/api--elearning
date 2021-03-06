@@ -47,7 +47,6 @@ router.post('/register', async (req, res) => {
             email: joi.string().email().required(),
             full_name: joi.string().required(),
             password: joi.string().required(),
-            gender: joi.string().required(),
             date_of_birth: joi.date().required(),
             avatarUrl: joi.string(),
         }).unknown();

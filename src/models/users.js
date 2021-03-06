@@ -13,7 +13,8 @@ const UsersSchema = new mongoose.Schema({
         type: String,
     },
     gender: {
-        type: String
+        type: String,
+        default: null
     },
     date_of_birth: {
         type: Date
