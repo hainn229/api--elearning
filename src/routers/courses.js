@@ -14,7 +14,7 @@ const {
 router.get('/', async (req, res) => {
     try {
         const currentPage = parseInt(req.query.currentPage) || 1;
-        const limitPage = parseInt(req.query.limitPage) || 5;
+        const limitPage = parseInt(req.query.limitPage) || 10;
         const keywords = req.query.keywords || '';
         const tutor = req.query.tutor || [];
         const category = req.query.category || [];
