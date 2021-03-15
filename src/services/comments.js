@@ -7,7 +7,7 @@ module.exports.getComments = async (courseId, currentPage, limitPage) => {
             course_id: courseId
         })
         .populate({
-            path: 'users'
+            path: 'user_id'
         })
         .skip(skip)
         .limit(limitPage)
@@ -32,7 +32,7 @@ module.exports.addComment = async (commentData) => {
     return await CommentsModel.findOne({
         _id: newComment._id
     }).populate({
-        path: 'users'
+        path: 'user_id'
     });
 };
 
@@ -43,7 +43,7 @@ module.exports.updateComment = async (id, dataUpdate) => {
     return await CommentsModel.findOne({
         _id: updateComment._id
     }).populate({
-        path: 'users'
+        path: 'user_id'
     });
 };
 

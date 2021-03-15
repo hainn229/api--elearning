@@ -8,7 +8,7 @@ module.exports.getLibrary = async (userId, currentPage, limitPage) => {
             user_id: userId
         })
         .populate({
-            path: 'courses'
+            path: 'course_id'
         })
         .skip(skip)
         .limit(limitPage)
@@ -33,7 +33,7 @@ module.exports.addToLibrary = async (libraryData) => {
     return await LibrariesModel.findOne({
         _id: newLibrary._id
     }).populate({
-        path: 'courses'
+        path: 'course_id'
     });
 };
 

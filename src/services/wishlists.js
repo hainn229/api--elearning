@@ -8,7 +8,7 @@ module.exports.getWishlist = async (userId, currentPage, limitPage) => {
             user_id: userId
         })
         .populate({
-            path: 'courses'
+            path: 'course_id'
         })
         .skip(skip)
         .limit(limitPage)
@@ -33,7 +33,7 @@ module.exports.addToWishlist = async (wishlistData) => {
     return await WishlistsModel.findOne({
         _id: newWishlist._id
     }).populate({
-        path: 'courses'
+        path: 'course_id'
     });
 };
 

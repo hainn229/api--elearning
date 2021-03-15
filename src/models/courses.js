@@ -30,7 +30,15 @@ const CoursesSchema = new mongoose.Schema({
     num_of_subscribers: {
         type: Number,
         default: 0
-    }
+    },
+    contents: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'contents'
+    }],
+    wishlist: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'wishlists'
+    }]
 }, {
     timestamps: true
 });

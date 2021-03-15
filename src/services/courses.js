@@ -30,13 +30,20 @@ module.exports.getCoursesWithPages = async (currentPage, limitPage, keywords, tu
             _id: -1
         })
         .populate({
-            path: 'users',
+            path: 'tutor_id',
             select: 'full_name'
         })
         .populate({
-            path: 'categories',
+            path: 'cat_id',
             select: 'cat_name'
+        })
+        .populate({
+            path: 'wishlist',
+        })
+        .populate({
+            path: 'contents'
         });
+        console.log(docs);
 
     const courses = await query.countDocuments();
 
