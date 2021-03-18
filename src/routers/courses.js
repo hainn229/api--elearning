@@ -89,41 +89,44 @@ router.get('/:id', async (req, res) => {
     };
 });
 
-// router.put('/:id', async (req, res) => {
-//     try {
-//         const dataInput = joi.object({
-//             course_title: joi.string().pattern(RegExp('^[A-Za-z0-9]*$')).required(),
-//             price: joi.number().required(),
-//             tutor_id: joi.string().required(),
-//             cat_id: joi.string().required(),
-//             description: joi.string()
-//         });
+router.put('/:id', async (req, res) => {
+    try {
+        const dataInput = joi.object({
+            course_title: joi.string().pattern(RegExp('^[A-Za-z0-9]*$')),
+            price: joi.number(),
+            tutor_id: joi.string(),
+            cat_id: joi.string(),
+            description: joi.string(),
+            num_of_subscribers: joi.number(),
+            contents: joi.array(), 
+            wishlist: joi.array(),
+        });
 
-//         const updateData = await dataInput.validate(req.body);
+        const updateData = await dataInput.validate(req.body);
 
-//         if (updateData.err) {
-//             return res.status(400).json({
-//                 message: 'Please enter a valid course title!'
-//             })
-//         }
+        if (updateData.err) {
+            return res.status(400).json({
+                message: 'Please enter a valid course title!'
+            })
+        }
 
-//         const course = await findCourseByTitle(req.body.course_title);
-//         if (course) {
-//             return res.status(200).json({
-//                 message: 'The course title is already exist!'
-//             });
-//         }
+        const course = await findCourseByTitle(req.body.course_title);
+        if (course) {
+            return res.status(200).json({
+                message: 'The course title is already exist!'
+            });
+        }
 
-//         await updateCourse(req.params.id, updateData.value);
-//         return res.status(200).json({
-//             message: 'The course have been updated successfully!'
-//         });
-//     } catch (err) {
-//         return res.status(500).json({
-//             message: err.message
-//         });
-//     };
-// });
+        await updateCourse(req.params.id, updateData.value);
+        return res.status(200).json({
+            message: 'The course have been updated successfully!'
+        });
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        });
+    };
+});
 
 router.delete('/:id', async (req, res) => {
     try {

@@ -8,7 +8,7 @@ module.exports.getWishlist = async (userId, currentPage, limitPage) => {
             user_id: userId
         })
         .populate({
-            path: 'course_id'
+            path: 'course_id',
         })
         .skip(skip)
         .limit(limitPage)
