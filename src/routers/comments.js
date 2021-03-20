@@ -28,6 +28,7 @@ router.post('/add', async (req, res) => {
         const commentData = joi.object({
             course_id: joi.string().required(),
             user_id: joi.string().required(),
+            point: joi.number(),
             description: joi.string().required()
         });
 
@@ -54,6 +55,7 @@ router.put('/:id', async (req, res) => {
         const commentData = joi.object({
             course_id: joi.string().required(),
             user_id: joi.string().required(),
+            point: joi.number(),
             description: joi.string().required()
         });
 
