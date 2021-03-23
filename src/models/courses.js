@@ -1,50 +1,56 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const CoursesSchema = new mongoose.Schema({
+const CoursesSchema = new mongoose.Schema(
+  {
     course_title: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     price: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
     level: {
-        type: String,
-        enum: ['Beginning level', 'Intermediate level', 'Advanced level', 'All levels'],
-        default: 'All levels'
+      type: String,
+      enum: [
+        "All levels",
+        "Beginning level",
+        "Intermediate level",
+        "Advanced level",
+      ],
+      default: "All levels",
     },
     tutor_id: {
-        type: mongoose.Types.ObjectId,
-        ref: 'users'
+      type: mongoose.Types.ObjectId,
+      ref: "users",
     },
     cat_id: {
-        type: mongoose.Types.ObjectId,
-        ref: 'categories',
-        required: true
+      type: mongoose.Types.ObjectId,
+      ref: "categories",
+      required: true,
     },
     description: {
-        type: String,
-        // required: true
+      type: String,
+      // required: true
     },
     num_of_subscribers: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
-    contents: [{
+    contents: [
+      {
         type: mongoose.Types.ObjectId,
-        ref: 'contents'
-    }],
-    wishlist: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'wishlists'
-    }]
-}, {
-    timestamps: true
-});
+        ref: "contents",
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
 
 CoursesSchema.index({
-    '$**': 'text'
+  "$**": "text",
 });
-const CoursesModel = mongoose.model('courses', CoursesSchema);
+const CoursesModel = mongoose.model("courses", CoursesSchema);
 module.exports = CoursesModel;

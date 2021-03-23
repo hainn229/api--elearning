@@ -20,13 +20,15 @@ router.get("/", async (req, res) => {
 
     const tutor = req.query.tutor || "";
     const category = req.query.category || "";
+    const level = req.query.level || "";
 
     const courses = await getCoursesWithPages(
       currentPage,
       limitPage,
       keywords,
       tutor,
-      category
+      category,
+      level
     );
     return res.status(200).json({
       courses: courses,
@@ -110,7 +112,6 @@ router.put("/:id", async (req, res) => {
       description: joi.string(),
       num_of_subscribers: joi.number(),
       contents: joi.array(),
-      wishlist: joi.array(),
     });
 
     const updateData = await dataInput.validate(req.body);

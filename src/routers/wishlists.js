@@ -4,7 +4,8 @@ const joi = require('joi');
 const {
     getWishlist,
     addToWishlist,
-    removeFromWishlist
+    removeFromWishlist,
+    findWishlishByCourseId
 } = require('../services/wishlists');
 
 router.get('/:userId', async (req, res) => {
@@ -36,6 +37,12 @@ router.post('/add', async (req, res) => {
             });
         };
 
+        const check = await findWishlishByCourseId(req.body.course_id)
+        if (check) {
+            return res.status(200).json({
+                message: 'The course name is already in wishlist!'
+            });
+        }
         const wishlist = await addToWishlist(newWishlist.value);
         return res.status(200).json({
             wishlist: wishlist

@@ -5,7 +5,8 @@ module.exports.getCoursesWithPages = async (
   limitPage,
   keywords,
   tutor,
-  category
+  category,
+  level
 ) => {
   const skip = (currentPage - 1) * limitPage;
   const query = CoursesModel.find({
@@ -33,6 +34,11 @@ module.exports.getCoursesWithPages = async (
       },
     });
   }
+  if (level.length > 0) {
+    query.find({
+      level: level,
+    });
+  }
 
   const docs = await query
     .skip(skip)
@@ -49,12 +55,8 @@ module.exports.getCoursesWithPages = async (
       select: "cat_name",
     })
     .populate({
-      path: "wishlist",
-    })
-    .populate({
       path: "contents",
     });
-  console.log(docs);
 
   const courses = await query.countDocuments();
 
@@ -63,6 +65,7 @@ module.exports.getCoursesWithPages = async (
     currentPage: currentPage,
     totalItems: courses,
     limitPage: limitPage,
+    level: level,
   };
 };
 
@@ -90,9 +93,6 @@ module.exports.detailsCourse = (id) => {
       .populate({
         path: "cat_id",
         select: "cat_name",
-      })
-      .populate({
-        path: "wishlist",
       })
       .populate({
         path: "contents",
@@ -134,3 +134,4 @@ module.exports.findCourseByTitle = (courseTitle) => {
     throw err;
   }
 };
+
