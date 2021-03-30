@@ -37,18 +37,17 @@ const CoursesSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    contents: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: "contents",
-      },
-    ],
+    // contents: [
+    //   {
+    //     type: mongoose.Types.ObjectId,
+    //     ref: "contents",
+    //   },
+    // ],
   },
   {
     timestamps: true,
   }
 );
-
 CoursesSchema.index({
   "$**": "text",
 });

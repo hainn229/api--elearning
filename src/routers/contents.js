@@ -50,7 +50,7 @@ router.post('/add', async (req, res) => {
     };
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/details/:id', async (req, res) => {
     try {
         const content = await detailsContent(req.params.id);
         return res.status(200).json({

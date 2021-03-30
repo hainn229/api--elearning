@@ -26,6 +26,19 @@ module.exports.getWishlist = async (userId, currentPage, limitPage) => {
   };
 };
 
+module.exports.findCourseInWishlist = async (userId, courseId) => {
+  const course = await WishlistsModel.findOne({
+    user_id: userId,
+    course_id: courseId,
+  }).populate({
+    path: "course_id",
+  });
+
+  return {
+    course: course,
+  };
+};
+
 module.exports.addToWishlist = async (wishlistData) => {
   const data = new WishlistsModel(wishlistData);
   const newWishlist = await data.save();
@@ -36,3 +49,9 @@ module.exports.addToWishlist = async (wishlistData) => {
   });
 };
 
+module.exports.removeFromWishlist = (userId, courseId) => {
+  return WishlistsModel.deleteOne({
+    user_id: userId,
+    course_id: courseId,
+  });
+};

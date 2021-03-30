@@ -37,7 +37,7 @@ const uploadFileImage = multer({
 const uploadFileVideo = multer({
     storage: storage,
     limits: {
-        fileSize: 1024 * 1024 * 20, // limit file size 20MB
+        fileSize: 1024 * 1024 * 500, // limit file size 500MB
     },
     fileFilter: (req, file, callback) => {
         if (file.mimetype === "video/mp4" || file.mimetype === "video/webm") {
@@ -63,7 +63,7 @@ router.post("/images", uploadFileImage.single("image"), async (req, res) => {
         });
         fs.unlinkSync(req.file.path);
         return res.status(200).json({
-            url: `https://storage.googleapis.com/${firebase.bucket.name}/${req.file.originalname}`,
+            url: `https://storage.googleapis.com/${firebase.bucket.name}/images/${req.file.originalname}`,
         });
     } catch (err) {
         return res.status(500).json({
@@ -82,7 +82,7 @@ router.post("/videos", uploadFileVideo.single("video"), async (req, res) => {
         });
         fs.unlinkSync(req.file.path);
         return res.status(200).json({
-            url: `https://storage.googleapis.com/${firebase.bucket.name}/${req.file.originalname}`,
+            url: `https://storage.googleapis.com/${firebase.bucket.name}/videos/${req.file.originalname}`,
         });
     } catch (err) {
         return res.status(500).json({

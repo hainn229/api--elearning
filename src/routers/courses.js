@@ -4,6 +4,7 @@ const joi = require("joi");
 const {
   getCoursesWithPages,
   getCourses,
+  getPopularCourses,
   addCourse,
   detailsCourse,
   updateCourse,
@@ -22,13 +23,18 @@ router.get("/", async (req, res) => {
     const category = req.query.category || "";
     const level = req.query.level || "";
 
+    const sortField = req.query.sortField || "_id";
+    const sortType = req.query.sortType || -1;
+    const sort = { sortField, sortType };
+
     const courses = await getCoursesWithPages(
       currentPage,
       limitPage,
       keywords,
       tutor,
       category,
-      level
+      level,
+      sort
     );
     return res.status(200).json({
       courses: courses,
@@ -45,6 +51,21 @@ router.get("/all", async (req, res) => {
     const keywords = req.query.keywords || "";
 
     const courses = await getCourses(keywords);
+    return res.status(200).json({
+      courses: courses,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+
+router.get("/popular", async (req, res) => {
+  try {
+    const currentPage = parseInt(req.query.currentPage) || 1;
+    const limitPage = parseInt(req.query.limitPage) || 5;
+    const courses = await getPopularCourses(currentPage, limitPage);
     return res.status(200).json({
       courses: courses,
     });

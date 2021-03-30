@@ -74,6 +74,38 @@ module.exports.getCourses = async () => {
   return courses;
 };
 
+module.exports.getPopularCourses = async (currentPage, limitPage) => {
+  const skip = (currentPage - 1) * limitPage;
+  const query = CoursesModel.find();
+
+  const docs = await query
+    .skip(skip)
+    .limit(limitPage)
+    .sort({
+      num_of_subscribers: -1,
+    })
+    .populate({
+      path: "tutor_id",
+      select: "full_name",
+    })
+    .populate({
+      path: "cat_id",
+      select: "cat_name",
+    })
+    .populate({
+      path: "contents",
+    });
+
+  const courses = await query.countDocuments();
+
+  return {
+    docs: docs,
+    currentPage: currentPage,
+    totalItems: courses,
+    limitPage: limitPage,
+  };
+};
+
 module.exports.addCourse = async (courseData) => {
   try {
     const newCourse = new CoursesModel(courseData);
@@ -134,4 +166,3 @@ module.exports.findCourseByTitle = (courseTitle) => {
     throw err;
   }
 };
-
