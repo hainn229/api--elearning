@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const router = require("./src/routers/index");
 const passport = require("passport");
 
+const PORT = process.env.PORT || 4000;
 mongoose.connect(
   "mongodb+srv://UN_admin_elearning1:PW_admin_elearning1@elearning.emrrd.mongodb.net/elearningDB?retryWrites=true&w=majority",
   {
@@ -38,5 +39,5 @@ app.use(router);
 app.get("/", (req, res) => {
   return res.send("Hi there!");
 });
-app.listen(4000);
+app.listen(PORT);
 module.exports = app;
