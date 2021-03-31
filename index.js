@@ -6,6 +6,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const router = require("./src/routers/index");
 const passport = require("passport");
+require("dotenv").config();
 
 const PORT = process.env.PORT || 4000;
 mongoose.connect(
