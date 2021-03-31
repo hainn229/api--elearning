@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const joi = require('joi');
+const { checkAuth } = require("../middlewares/auth");
 const {
     getLibrary,
     addToLibrary,
     removeFromLibrary
 } = require('../services/libraries');
 
-router.get('/:userId', async (req, res) => {
+router.get('/:userId', checkAuth(true), async (req, res) => {
     try {
         const userId = req.params.userId;
         const currentPage = parseInt(req.query.currentPage) || 1;
@@ -22,7 +23,7 @@ router.get('/:userId', async (req, res) => {
     };
 });
 
-router.post('/add', async (req, res) => {
+router.post('/add', checkAuth(true), async (req, res) => {
     try {
         const libraryData = joi.object({
             course_id: joi.string().required(),
@@ -47,7 +48,7 @@ router.post('/add', async (req, res) => {
     };
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAuth(true), async (req, res) => {
     try {
         await removeFromLibrary(req.params.id);
         return res.status(200).json({

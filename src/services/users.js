@@ -25,7 +25,6 @@ module.exports.verifyToken = (token) => {
 };
 
 // Users
-
 module.exports.getUsersWithPages = async (currentPage, limitPage, keywords) => {
   const skip = (currentPage - 1) * limitPage;
   const query = UsersModel.find({
@@ -89,32 +88,45 @@ module.exports.findUserByEmail = async (email) => {
   return user;
 };
 
-module.exports.resetPassword = async (email, updatePassword) => {
+module.exports.updateUser = async (id, dataUpdate) => {
   try {
-    const salt = await bcrypt.genSalt(10);
-    updatePassword = await bcrypt.hash(updatePassword, salt);
     await UsersModel.updateOne(
       {
-        email: email,
+        _id: id,
       },
-      {
-        password: updatePassword,
-      }
+      dataUpdate
     );
   } catch (err) {
     throw err;
   }
 };
 
-module.exports.updateUser = async (id, dataUpdate) => {
+module.exports.updatePassword = async (id, cur_password, new_password) => {
   try {
-    // const salt = await bcrypt.genSalt(10);
-    // dataUpdate.password = await bcrypt.hash(dataUpdate.password, salt);
+    const user = await UsersModel.findOne({ _id: id });
+    const match = bcrypt.compareSync(cur_password, user.password);
+    if (match == true) {
+      const salt = await bcrypt.genSalt(10);
+      new_password = await bcrypt.hash(new_password, salt);
+      user.password = new_password;
+      return await user.save();
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+module.exports.resetPassword = async (email, new_password) => {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    new_password = await bcrypt.hash(new_password, salt);
     await UsersModel.updateOne(
       {
-        _id: id,
+        email: email,
       },
-      dataUpdate
+      {
+        password: new_password,
+      }
     );
   } catch (err) {
     throw err;
