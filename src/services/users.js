@@ -21,7 +21,7 @@ module.exports.Token = (id, email, role) => {
 };
 
 module.exports.verifyToken = (token) => {
-  return jwt.verify(token, config.get("jwt.JWT_SECRET"));
+  return jwt.verify(token, "hainn229_elearning@2021");
 };
 
 // Users

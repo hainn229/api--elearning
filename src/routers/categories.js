@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const joi = require("joi");
-const { checkAuth } = require("../middlewares/auth");
+const { checkAuth, checkRole } = require("../middlewares/auth");
 const {
   getCategoriesWithPages,
   getCategories,
@@ -45,7 +45,7 @@ router.get("/all", async (req, res) => {
   }
 });
 
-router.post("/add", checkAuth(true), async (req, res) => {
+router.post("/add", checkAuth(true), checkRole(), async (req, res) => {
   try {
     const dataInput = joi.object({
       cat_name: joi.string().pattern(RegExp("^[A-Za-z0-9]*$")).required(),
@@ -88,7 +88,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", checkAuth(true), async (req, res) => {
+router.put("/:id", checkAuth(true), checkRole(), async (req, res) => {
   try {
     const dataInput = joi.object({
       cat_name: joi.string().pattern(RegExp("^[A-Za-z0-9]*$")).required(),
@@ -120,7 +120,7 @@ router.put("/:id", checkAuth(true), async (req, res) => {
   }
 });
 
-router.delete("/:id", checkAuth(true), async (req, res) => {
+router.delete("/:id", checkAuth(true), checkRole(), async (req, res) => {
   try {
     await deleteCategory(req.params.id);
     return res.status(200).json({

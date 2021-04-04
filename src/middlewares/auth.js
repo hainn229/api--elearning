@@ -1,35 +1,46 @@
-const UsersModel = require('../models/users');
-const {
-    verifyToken
-} = require('../services/users');
+const UsersModel = require("../models/users");
+const { verifyToken } = require("../services/users");
 
 module.exports.checkAuth = (required) => {
-    return (req, res, next) => {
-        if (!req.headers.authorization) {
-            if (required) {
-                res.status(401).send('Could not find token!');
-            } else {
-                next();
-            }
-        }
-        const token = req.headers.authorization.split(' ')[1];
-        try {
-            const object = verifyToken(token);
-            const email = object.iss;
-            UsersModel.findOne({
-                email: email
-            }).exec().then((user) => {
-                req.user = user;
-                next();
-            }).catch(() => {
-                res.status(401).send('Could not find user!');
-            });
-        } catch {
-            if (required) {
-                res.status(401).send('Invalid token!');
-            } else {
-                next();
-            };
-        };
-    };
+  return (req, res, next) => {
+    if (!req.headers.authorization) {
+      if (required) {
+        res.status(401).send("Could not find token!");
+      } else {
+        next();
+      }
+    }
+    const token = req.headers.authorization.split(" ")[1];
+    try {
+      const object = verifyToken(token);
+      const email = object.iss;
+      UsersModel.findOne({
+        email: email,
+      })
+        .exec()
+        .then((user) => {
+          req.user = user;
+          next();
+        })
+        .catch(() => {
+          res.status(401).send("Could not find user!");
+        });
+    } catch {
+      if (required) {
+        res.status(401).send("Invalid token!");
+      } else {
+        next();
+      }
+    }
+  };
+};
+
+module.exports.checkRole = () => {
+  return (req, res, next) => {
+    if (req.user.role === "ADMIN") {
+      next();
+    } else {
+      res.status(401).send("Unauthorized");
+    }
+  };
 };

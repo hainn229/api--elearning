@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { getUsersWithPages, getUsers } = require("../services/users");
-const { checkAuth } = require("../middlewares/auth");
+const { checkAuth, checkRole } = require("../middlewares/auth");
 
-router.get("/", checkAuth(true), async (req, res, next) => {
+router.get("/", checkAuth(true), checkRole(), async (req, res, next) => {
   try {
     const currentPage = parseInt(req.query.currentPage) || 1;
     const limitPage = parseInt(req.query.limitPage) || 5;
@@ -19,7 +19,7 @@ router.get("/", checkAuth(true), async (req, res, next) => {
   }
 });
 
-router.get("/all", checkAuth(true), async (req, res) => {
+router.get("/all", checkAuth(true), checkRole(), async (req, res) => {
   try {
     const users = await getUsers();
     return res.status(200).json({
