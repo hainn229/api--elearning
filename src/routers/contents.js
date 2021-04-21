@@ -10,7 +10,7 @@ const {
   deleteContent,
 } = require("../services/contents");
 
-router.get("/:courseId", checkAuth(true), async (req, res) => {
+router.get("/:courseId", async (req, res) => {
   try {
     const contents = await getContent();
     return res.status(200).json({
@@ -23,7 +23,7 @@ router.get("/:courseId", checkAuth(true), async (req, res) => {
   }
 });
 
-router.post("/add", checkAuth(true), async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
     const dataInput = joi.object({
       title: joi.string().pattern(RegExp("^[A-Za-z0-9]*$")).required(),
@@ -50,7 +50,7 @@ router.post("/add", checkAuth(true), async (req, res) => {
   }
 });
 
-router.get("/details/:id", checkAuth(true), async (req, res) => {
+router.get("/details/:id", async (req, res) => {
   try {
     const content = await detailsContent(req.params.id);
     return res.status(200).json({
@@ -63,7 +63,7 @@ router.get("/details/:id", checkAuth(true), async (req, res) => {
   }
 });
 
-router.put("/:id", checkAuth(true), async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const dataInput = joi.object({
       title: joi.string().pattern(RegExp("^[A-Za-z0-9]*$")).required(),
@@ -91,7 +91,7 @@ router.put("/:id", checkAuth(true), async (req, res) => {
   }
 });
 
-router.delete("/:id", checkAuth(true), async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     await deleteContent(req.params.id);
     return res.status(200).json({
