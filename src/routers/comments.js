@@ -24,7 +24,7 @@ router.get("/:courseId", async (req, res) => {
   }
 });
 
-router.post("/add", checkAuth(true), async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
     const commentData = joi.object({
       course_id: joi.string().required(),
@@ -51,7 +51,7 @@ router.post("/add", checkAuth(true), async (req, res) => {
   }
 });
 
-router.put("/:id", checkAuth(true), async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const commentData = joi.object({
       course_id: joi.string().required(),
@@ -78,7 +78,7 @@ router.put("/:id", checkAuth(true), async (req, res) => {
   }
 });
 
-router.delete("/:id", checkAuth(true), async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     await deleteComment(req.params.id);
     return res.status(200).json({

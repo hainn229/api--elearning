@@ -9,7 +9,7 @@ const {
   findCourseInWishlist,
 } = require("../services/wishlists");
 
-router.get("/:userId", checkAuth(true), async (req, res) => {
+router.get("/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
     const currentPage = parseInt(req.query.currentPage) || 1;
@@ -24,7 +24,7 @@ router.get("/:userId", checkAuth(true), async (req, res) => {
   }
 });
 
-router.post("/add", checkAuth(true), async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
     const wishlistData = joi.object({
       course_id: joi.string().required(),
@@ -56,7 +56,7 @@ router.post("/add", checkAuth(true), async (req, res) => {
   }
 });
 
-router.delete("/:id", checkAuth(true), async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     await removeFromWishlist(req.params.id);
     return res.status(200).json({
