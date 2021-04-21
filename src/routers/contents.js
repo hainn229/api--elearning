@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const joi = require("joi");
-const { checkAuth, checkRole } = require("../middlewares/auth");
+const { checkAuth } = require("../middlewares/auth");
 const {
   getContent,
   addContent,
@@ -23,7 +23,7 @@ router.get("/:courseId", checkAuth(true), async (req, res) => {
   }
 });
 
-router.post("/add", checkAuth(true), checkRole(), async (req, res) => {
+router.post("/add", checkAuth(true), async (req, res) => {
   try {
     const dataInput = joi.object({
       title: joi.string().pattern(RegExp("^[A-Za-z0-9]*$")).required(),
@@ -63,7 +63,7 @@ router.get("/details/:id", checkAuth(true), async (req, res) => {
   }
 });
 
-router.put("/:id", checkAuth(true), checkRole(), async (req, res) => {
+router.put("/:id", checkAuth(true), async (req, res) => {
   try {
     const dataInput = joi.object({
       title: joi.string().pattern(RegExp("^[A-Za-z0-9]*$")).required(),
@@ -91,7 +91,7 @@ router.put("/:id", checkAuth(true), checkRole(), async (req, res) => {
   }
 });
 
-router.delete("/:id", checkAuth(true), checkRole(), async (req, res) => {
+router.delete("/:id", checkAuth(true), async (req, res) => {
   try {
     await deleteContent(req.params.id);
     return res.status(200).json({
