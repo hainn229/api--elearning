@@ -116,6 +116,13 @@ module.exports.updatePassword = async (id, cur_password, new_password) => {
   }
 };
 
+module.exports.updateAmount = async (id, newAmount) => {
+  const user = await UsersModel.findOne({ _id: id });
+  user.amount = user.amount + newAmount;
+  await user.save();
+  return user.amount;
+};
+
 module.exports.resetPassword = async (email, new_password) => {
   try {
     const salt = await bcrypt.genSalt(10);
