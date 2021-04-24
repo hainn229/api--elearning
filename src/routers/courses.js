@@ -11,6 +11,8 @@ const {
   updateCourse,
   deleteCourse,
   findCourseByTitle,
+  getRecentCourses,
+  addRecentCourse,
 } = require("../services/courses");
 
 router.get("/", async (req, res) => {
@@ -77,6 +79,19 @@ router.get("/popular", async (req, res) => {
   }
 });
 
+router.get("/recent/:userId", async (req, res) => {
+  try {
+    const courses = await getRecentCourses(req.params.id);
+    return res.status(200).json({
+      courses: courses,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+
 router.post("/add", async (req, res) => {
   try {
     const dataInput = joi.object({
@@ -106,6 +121,31 @@ router.post("/add", async (req, res) => {
     });
   } catch (err) {
     return res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+
+router.post("/recent/add", async (req, res) => {
+  try {
+    const recentData = joi.object({
+      course_id: joi.string().required(),
+      user_id: joi.string().required(),
+    });
+
+    const newRecent = await recentData.validate(req.body);
+    if (newRecent.err) {
+      return res.status(400).json({
+        message: newRecent.err.message,
+      });
+    }
+
+    const recent = await addRecentCourse(newRecent.value);
+    return res.status(200).json({
+      recent: recent,
+    });
+  } catch (err) {
+    res.status(500).json({
       message: err.message,
     });
   }

@@ -117,28 +117,11 @@ router.post("/google", async (req, res) => {
   }
 });
 
-router.put("/:id", checkAuth(true), async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
-    const dataInput = joi.object({
-      //   email: joi.string().email(),
-      full_name: joi.string(),
-      password: joi.string(),
-      gender: joi.string(),
-      //   role: joi.string(),
-      date_of_birth: joi.date(),
-      //   avatarUrl: joi.string(),
-      //   googleId: joi.string(),
-    });
+    const dataInput = req.body;
 
-    const updateData = await dataInput.validate(req.body);
-
-    if (updateData.err) {
-      return res.status(400).json({
-        message: "Please enter a valid data!",
-      });
-    }
-
-    await updateUser(req.params.id, updateData.value);
+    await updateUser(req.params.id, dataInput);
     return res.status(200).json({
       message: "Update information successfully!",
     });
@@ -148,7 +131,6 @@ router.put("/:id", checkAuth(true), async (req, res) => {
     });
   }
 });
-
 
 router.put("/updatePassword", checkAuth(true), async (req, res) => {
   try {

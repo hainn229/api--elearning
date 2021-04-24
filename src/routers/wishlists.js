@@ -12,10 +12,8 @@ const {
 router.get("/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
-    const currentPage = parseInt(req.query.currentPage) || 1;
-    const limitPage = parseInt(req.query.limitPage) || 5;
 
-    const wishlists = await getWishlist(userId, currentPage, limitPage);
+    const wishlists = await getWishlist(userId);
     return res.status(200).json(wishlists);
   } catch (err) {
     res.status(500).json({

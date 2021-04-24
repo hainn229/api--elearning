@@ -1,4 +1,5 @@
 const CoursesModel = require("../models/courses");
+const RecentsModel = require("../models/recents");
 
 module.exports.getCoursesWithPages = async (
   currentPage,
@@ -106,6 +107,29 @@ module.exports.getPopularCourses = async (currentPage, limitPage) => {
   };
 };
 
+module.exports.getRecentCourses = async (userId) => {
+  const recents = await RecentsModel.find({ user_id: userId })
+    .populate({
+      path: "couse_id",
+    })
+    .sort({
+      _id: -1,
+    });
+
+  return {
+    recents: recents,
+  };
+};
+
+module.exports.addRecentCourse = async (courseData) => {
+  try {
+    const newRecent = new RecentsModel(courseData);
+    return newRecent.save();
+  } catch (err) {
+    throw err;
+  }
+};
+
 module.exports.addCourse = async (courseData) => {
   try {
     const newCourse = new CoursesModel(courseData);
@@ -136,7 +160,7 @@ module.exports.detailsCourse = (id) => {
 
 module.exports.updateCourse = async (id, dataUpdate) => {
   try {
-    return CoursesModel.updateOne(
+    return await CoursesModel.updateOne(
       {
         _id: id,
       },

@@ -1,24 +1,26 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const auth = require('./auth');
-const users = require('./users');
-const upload = require('./uploadFile');
-const categories = require('./categories');
-const courses = require('./courses');
-const contents = require('./contents');
-const comments = require('./comments');
-const wishlists = require('./wishlists');
-const libraries = require('./libraries');
+const auth = require("./auth");
+const users = require("./users");
+const upload = require("./uploadFile");
+const categories = require("./categories");
+const courses = require("./courses");
+const contents = require("./contents");
+const comments = require("./comments");
+const wishlists = require("./wishlists");
+const libraries = require("./libraries");
+const orders = require("./orders");
 
-router.use('/auth', auth);
-router.use('/users', users);
-router.use('/upload', upload);
-router.use('/categories', categories);
-router.use('/courses', courses);
-router.use('/contents', contents);
-router.use('/comments', comments);
-router.use('/wishlists', wishlists);
-router.use('/libraries', libraries);
+router.use("/auth", auth);
+router.use("/users", users);
+router.use("/upload", upload);
+router.use("/categories", categories);
+router.use("/courses", courses);
+router.use("/contents", contents);
+router.use("/comments", comments);
+router.use("/wishlists", wishlists);
+router.use("/libraries", libraries);
+router.use("/orders", orders);
 
 module.exports = router;
