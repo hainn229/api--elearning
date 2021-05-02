@@ -45,6 +45,10 @@ const CoursesSchema = new mongoose.Schema(
       default:
         "https://th.bing.com/th/id/OIP.P7CgVRpsPkwUfL9XKKk5zAHaIY?w=138&h=171&c=7&o=5&pid=1.7",
     },
+    status: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

@@ -15,6 +15,7 @@ const {
   findCourseByTitle,
   getRecentCourses,
   addRecentCourse,
+  getCoursesAdmin,
 } = require("../services/courses");
 
 router.get("/", async (req, res) => {
@@ -119,6 +120,39 @@ router.get("/active", async (req, res) => {
     });
   }
 });
+router.get("/admin", async (req, res) => {
+  try {
+    const currentPage = parseInt(req.query.currentPage) || 1;
+    const limitPage = parseInt(req.query.limitPage) || 10;
+
+    const keywords = req.query.keywords || "";
+
+    const tutor = req.query.tutor || "";
+    const category = req.query.category || "";
+    const level = req.query.level || "";
+
+    const sortField = req.query.sortField || "_id";
+    const sortType = req.query.sortType || -1;
+    const sort = { sortField, sortType };
+
+    const courses = await getCoursesAdmin(
+      currentPage,
+      limitPage,
+      keywords,
+      tutor,
+      category,
+      level,
+      sort
+    );
+    return res.status(200).json({
+      courses: courses,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+});
 
 router.get("/all", checkAuth(true), async (req, res) => {
   try {
@@ -168,7 +202,7 @@ router.post("/add", checkAuth(true), async (req, res) => {
     const dataInput = joi.object({
       course_title: joi.string().pattern(RegExp("^[A-Za-z0-9]*$")).required(),
       price: joi.number().required(),
-      tutor_id: joi.string().required(),
+      tutor_id: joi.string(),
       cat_id: joi.string().required(),
       description: joi.string(),
     });
@@ -244,7 +278,9 @@ router.put("/:id", checkAuth(true), async (req, res) => {
       cat_id: joi.string(),
       description: joi.string(),
       num_of_subscribers: joi.number(),
-      contents: joi.array(),
+      tutor: joi.string(),
+      poster: joi.string(),
+      status: joi.boolean(),
     });
 
     const updateData = await dataInput.validate(req.body);

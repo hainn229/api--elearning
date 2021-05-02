@@ -224,6 +224,77 @@ module.exports.getCoursesActive = async (
   };
 };
 
+module.exports.getCoursesAdmin = async (
+  currentPage,
+  limitPage,
+  keywords,
+  tutor,
+  category,
+  level,
+  sort,
+) => {
+  const skip = (currentPage - 1) * limitPage;
+  const query1 = CoursesModel.find({ tutor_id: null });
+  const query = query1.find({
+    $and: [
+      {
+        course_title: {
+          $regex: keywords,
+          $options: "exp",
+        },
+      },
+    ],
+  });
+
+  if (tutor.length > 0) {
+    query.find({
+      tutor_id: {
+        $in: tutor,
+      },
+    });
+  }
+  if (category.length > 0) {
+    query.find({
+      cat_id: {
+        $in: category,
+      },
+    });
+  }
+  if (level.length > 0) {
+    query.find({
+      level: level,
+    });
+  }
+
+  const docs = await query
+    .skip(skip)
+    .limit(limitPage)
+    .sort({
+      _id: -1,
+    })
+    .populate({
+      path: "tutor_id",
+      select: "full_name",
+    })
+    .populate({
+      path: "cat_id",
+      select: "cat_name",
+    })
+    .populate({
+      path: "contents",
+    });
+
+  const courses = await query.countDocuments();
+
+  return {
+    docs: docs,
+    currentPage: currentPage,
+    totalItems: courses,
+    limitPage: limitPage,
+    level: level,
+  };
+};
+
 module.exports.getCourses = async () => {
   const courses = await CoursesModel.find();
   return courses;
