@@ -7,7 +7,8 @@ module.exports.getComments = async (courseId, currentPage, limitPage) => {
             course_id: courseId
         })
         .populate({
-            path: 'user_id'
+            path: 'user_id',
+            select: ['full_name', 'avatarUrl']
         })
         .skip(skip)
         .limit(limitPage)

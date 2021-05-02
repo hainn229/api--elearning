@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 const joi = require("joi");
-const { checkAuth } = require("../middlewares/auth");
+const { checkAuth, checkRole } = require("../middlewares/auth");
 const {
   Token,
   login,
@@ -12,6 +12,8 @@ const {
   updateUser,
   updatePassword,
   resetPassword,
+  getInfo,
+  deleteUser,
 } = require("../services/users");
 const UsersModel = require("../models/users");
 
@@ -19,7 +21,24 @@ router.get("/myAccount", checkAuth(true), (req, res) => {
   res.status(200).json(req.user);
 });
 
-router.post("/login", async (req, res, next) => {
+router.get(`/:id`, checkAuth(true), async (req, res) => {
+  try {
+    const info = await getInfo(req.params.id);
+    if (info) {
+      return res.status(200).json({
+        info,
+      });
+    } else {
+      return res.status(400).json({
+        message: `Cannot get user information !`,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+router.post("/login", async (req, res) => {
   try {
     const dataInput = joi.object({
       email: joi.string().email().required(),
@@ -33,12 +52,14 @@ router.post("/login", async (req, res, next) => {
         user: user.userInfo,
         token: user.token,
       });
+    } else {
+      return res.status(400).json({
+        message: `The email address or password that you've entered is incorrect!`,
+      });
     }
-    return res.status(400).json({
-      message: `The email address or password that you've entered is incorrect!`,
-    });
   } catch (err) {
-    next(err);
+    return res.status(500).json({ message: err.message });
+    // next(err);
   }
 });
 
@@ -117,38 +138,20 @@ router.post("/google", async (req, res) => {
   }
 });
 
-router.put("/:id", checkAuth(true), async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
-    const dataInput = joi.object({
-      //   email: joi.string().email(),
-      full_name: joi.string(),
-      password: joi.string(),
-      gender: joi.string(),
-      //   role: joi.string(),
-      date_of_birth: joi.date(),
-      //   avatarUrl: joi.string(),
-      //   googleId: joi.string(),
-    });
-
-    const updateData = await dataInput.validate(req.body);
-
-    if (updateData.err) {
-      return res.status(400).json({
-        message: "Please enter a valid data!",
-      });
-    }
-
-    await updateUser(req.params.id, updateData.value);
+    const dataInput = req.body;
+    await updateUser(req.params.id, dataInput);
     return res.status(200).json({
       message: "Update information successfully!",
     });
   } catch (err) {
     return res.status(500).json({
-      message: err.message,
+      // message: err.message,
+      message: "Update failed ! " + err.message,
     });
   }
 });
-
 
 router.put("/updatePassword", checkAuth(true), async (req, res) => {
   try {
@@ -175,6 +178,19 @@ router.put("/updatePassword", checkAuth(true), async (req, res) => {
     return res.status(200).json({ message: "Update password successfully !" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+});
+
+router.delete("/:id", checkAuth(true), checkRole(true), async (req, res) => {
+  try {
+    await deleteUser(req.params.id);
+    return res.status(200).json({
+      message: "User have been deleted!",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
   }
 });
 

@@ -63,21 +63,26 @@ module.exports.register = async (userInfo) => {
   }
 };
 
-module.exports.getMyInfo = async (id) => {
-  const myInfo = await UsersModel.findById(id);
-  return myInfo;
+module.exports.getInfo = async (id) => {
+  return await UsersModel.findById(id);
 };
 
 module.exports.login = async (email, password) => {
   const user = await UsersModel.findOne({
     email: email,
   });
-  const match = await bcrypt.compare(password, user.password);
-  if (user && match == true) {
+  if (!user) {
     return {
-      userInfo: user,
-      token: this.Token(user._id, user.email, user.role),
+      message: "Could not find email address !",
     };
+  } else {
+    const match = await bcrypt.compare(password, user.password);
+    if (match == true) {
+      return {
+        userInfo: user,
+        token: this.Token(user._id, user.email, user.role),
+      };
+    }
   }
 };
 
@@ -90,7 +95,7 @@ module.exports.findUserByEmail = async (email) => {
 
 module.exports.updateUser = async (id, dataUpdate) => {
   try {
-    await UsersModel.updateOne(
+    return await UsersModel.updateOne(
       {
         _id: id,
       },
@@ -99,6 +104,13 @@ module.exports.updateUser = async (id, dataUpdate) => {
   } catch (err) {
     throw err;
   }
+};
+
+module.exports.updateAmount = async (id, newAmount) => {
+  const user = await UsersModel.findOne({ _id: id });
+  user.amount = user.amount + newAmount;
+  await user.save();
+  return user.amount;
 };
 
 module.exports.updatePassword = async (id, cur_password, new_password) => {
@@ -114,13 +126,6 @@ module.exports.updatePassword = async (id, cur_password, new_password) => {
   } catch (err) {
     throw err;
   }
-};
-
-module.exports.updateAmount = async (id, newAmount) => {
-  const user = await UsersModel.findOne({ _id: id });
-  user.amount = user.amount + newAmount;
-  await user.save();
-  return user.amount;
 };
 
 module.exports.resetPassword = async (email, new_password) => {
@@ -139,6 +144,13 @@ module.exports.resetPassword = async (email, new_password) => {
     throw err;
   }
 };
+
+module.exports.deleteUser = (id) => {
+  return UsersModel.deleteOne({
+      _id: id
+  });
+};
+
 
 // Passport
 module.exports.findUserByGoogleId = async (id) => {

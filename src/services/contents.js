@@ -2,7 +2,7 @@ const ContentsModel = require('../models/contents');
 
 module.exports.getContent = async (courseId) => {
     return await ContentsModel.find({
-        courseId: courseId
+        course_id: courseId
     });
 };
 

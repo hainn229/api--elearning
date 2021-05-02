@@ -64,7 +64,7 @@ module.exports.totalTransactions = async () => {
 
 module.exports.checkPayment = async (paymentId) => {
   try {
-    const data = querystring.stringify({
+    const data = queryString.stringify({
       grant_type: "client_credentials",
     });
     const response = await axios.default.post(

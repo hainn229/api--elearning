@@ -5,15 +5,55 @@ const { checkAuth, checkRole } = require("../middlewares/auth");
 const {
   getCoursesWithPages,
   getCourses,
+  getCoursesActive,
+  getCoursesPending,
   getPopularCourses,
   addCourse,
   detailsCourse,
   updateCourse,
   deleteCourse,
   findCourseByTitle,
+  getRecentCourses,
+  addRecentCourse,
 } = require("../services/courses");
 
 router.get("/", async (req, res) => {
+  try {
+    const currentPage = parseInt(req.query.currentPage) || 1;
+    const limitPage = parseInt(req.query.limitPage) || 10;
+
+    const keywords = req.query.keywords || "";
+
+    const tutor = req.query.tutor || "";
+    const category = req.query.category || "";
+    const level = req.query.level || "";
+    const status = req.query.status || {};
+
+    const sortField = req.query.sortField || "_id";
+    const sortType = req.query.sortType || -1;
+    const sort = { sortField, sortType };
+
+    const courses = await getCoursesWithPages(
+      currentPage,
+      limitPage,
+      keywords,
+      tutor,
+      category,
+      level,
+      status,
+      sort
+    );
+    return res.status(200).json({
+      courses: courses,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+
+router.get("/pending", checkAuth(true), async (req, res) => {
   try {
     const currentPage = parseInt(req.query.currentPage) || 1;
     const limitPage = parseInt(req.query.limitPage) || 10;
@@ -28,7 +68,40 @@ router.get("/", async (req, res) => {
     const sortType = req.query.sortType || -1;
     const sort = { sortField, sortType };
 
-    const courses = await getCoursesWithPages(
+    const courses = await getCoursesPending(
+      currentPage,
+      limitPage,
+      keywords,
+      tutor,
+      category,
+      level,
+      sort
+    );
+    return res.status(200).json({
+      courses: courses,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+router.get("/active", async (req, res) => {
+  try {
+    const currentPage = parseInt(req.query.currentPage) || 1;
+    const limitPage = parseInt(req.query.limitPage) || 10;
+
+    const keywords = req.query.keywords || "";
+
+    const tutor = req.query.tutor || "";
+    const category = req.query.category || "";
+    const level = req.query.level || "";
+
+    const sortField = req.query.sortField || "_id";
+    const sortType = req.query.sortType || -1;
+    const sort = { sortField, sortType };
+
+    const courses = await getCoursesActive(
       currentPage,
       limitPage,
       keywords,
@@ -47,7 +120,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/all", async (req, res) => {
+router.get("/all", checkAuth(true), async (req, res) => {
   try {
     const keywords = req.query.keywords || "";
 
@@ -77,7 +150,20 @@ router.get("/popular", async (req, res) => {
   }
 });
 
-router.post("/add", async (req, res) => {
+router.get("/recent/:userId", checkAuth(true), async (req, res) => {
+  try {
+    const courses = await getRecentCourses(req.params.id);
+    return res.status(200).json({
+      courses: courses,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+
+router.post("/add", checkAuth(true), async (req, res) => {
   try {
     const dataInput = joi.object({
       course_title: joi.string().pattern(RegExp("^[A-Za-z0-9]*$")).required(),
@@ -111,6 +197,31 @@ router.post("/add", async (req, res) => {
   }
 });
 
+router.post("/recent/add", checkAuth(true), async (req, res) => {
+  try {
+    const recentData = joi.object({
+      course_id: joi.string().required(),
+      user_id: joi.string().required(),
+    });
+
+    const newRecent = await recentData.validate(req.body);
+    if (newRecent.err) {
+      return res.status(400).json({
+        message: newRecent.err.message,
+      });
+    }
+
+    const recent = await addRecentCourse(newRecent.value);
+    return res.status(200).json({
+      recent: recent,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const course = await detailsCourse(req.params.id);
@@ -124,7 +235,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", checkAuth(true), async (req, res) => {
   try {
     const dataInput = joi.object({
       course_title: joi.string().pattern(RegExp("^[A-Za-z0-9]*$")),
@@ -162,7 +273,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", checkAuth(true), async (req, res) => {
   try {
     await deleteCourse(req.params.id);
     return res.status(200).json({

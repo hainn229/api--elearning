@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const LibrariesSchema = new mongoose.Schema({
+const RecentsSchema = new mongoose.Schema({
     course_id: {
         type: mongoose.Types.ObjectId,
         ref: 'courses'
@@ -13,8 +13,8 @@ const LibrariesSchema = new mongoose.Schema({
     timestamps: true
 });
 
-LibrariesSchema.index({
+RecentsSchema.index({
     '$**': 'text'
 });
-const LibrariesModel = mongoose.model('libraries', LibrariesSchema);
-module.exports = LibrariesModel;
+const RecentsModel = mongoose.model('recents', RecentsSchema);
+module.exports = RecentsModel;

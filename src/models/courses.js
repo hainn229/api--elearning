@@ -24,6 +24,10 @@ const CoursesSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "users",
     },
+    tutor: {
+      type: String,
+      default: null,
+    },
     cat_id: {
       type: mongoose.Types.ObjectId,
       ref: "categories",
@@ -31,18 +35,16 @@ const CoursesSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      // required: true
     },
     num_of_subscribers: {
       type: Number,
       default: 0,
     },
-    // contents: [
-    //   {
-    //     type: mongoose.Types.ObjectId,
-    //     ref: "contents",
-    //   },
-    // ],
+    poster: {
+      type: String,
+      default:
+        "https://th.bing.com/th/id/OIP.P7CgVRpsPkwUfL9XKKk5zAHaIY?w=138&h=171&c=7&o=5&pid=1.7",
+    },
   },
   {
     timestamps: true,

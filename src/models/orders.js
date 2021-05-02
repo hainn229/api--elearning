@@ -2,23 +2,15 @@ const mongoose = require("mongoose");
 
 const OrdersSchema = new mongoose.Schema(
   {
-    cart: [
-      {
-        course_id: {
-          type: mongoose.Types.ObjectId,
-          required: true,
-          ref: "courses",
-        },
-        user_id: {
-          type: mongoose.Types.ObjectId,
-          required: true,
-          ref: "users",
-        },
-      },
-    ],
-    total: {
-      type: Number,
+    user_id: {
+      type: mongoose.Types.ObjectId,
       required: true,
+      ref: "users",
+    },
+    course_id: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "courses",
     },
     status: {
       type: Boolean,

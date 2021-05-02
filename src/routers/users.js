@@ -12,7 +12,7 @@ const {
   checkPayment,
 } = require("../services/transactions");
 
-router.get("/", checkAuth(true), checkRole(), async (req, res, next) => {
+router.get("/", checkAuth(true), checkRole(true), async (req, res, next) => {
   try {
     const currentPage = parseInt(req.query.currentPage) || 1;
     const limitPage = parseInt(req.query.limitPage) || 5;
@@ -28,7 +28,7 @@ router.get("/", checkAuth(true), checkRole(), async (req, res, next) => {
   }
 });
 
-router.get("/all", checkAuth(true), checkRole(), async (req, res) => {
+router.get("/all", checkAuth(true), checkRole(true), async (req, res) => {
   try {
     const users = await getUsers();
     return res.status(200).json({
@@ -41,7 +41,7 @@ router.get("/all", checkAuth(true), checkRole(), async (req, res) => {
   }
 });
 
-router.post("/updateAmount", async (req, res) => {
+router.post("/updateAmount", checkAuth(true), async (req, res) => {
   try {
     const paymentInfo = await checkPayment(req.body.paymentId);
     if (paymentInfo == null) {
@@ -57,7 +57,7 @@ router.post("/updateAmount", async (req, res) => {
       await createTransaction(transactionsData);
       const newAmount = await updateAmount(
         req.body.user_id,
-        parseFloat(paymentInfo.amount.total) * 10
+        parseFloat(paymentInfo.amount.total) * 1
       );
       return res
         .status(200)
@@ -68,7 +68,7 @@ router.post("/updateAmount", async (req, res) => {
   }
 });
 
-router.get("/purchase", async (req, res) => {
+router.get("/purchase", checkAuth(true), async (req, res) => {
   try {
     const user = req.user;
     const currentPage = parseInt(req.query.currentPage) || 1;

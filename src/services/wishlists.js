@@ -1,16 +1,12 @@
 const WishlistsModel = require("../models/wishlists");
 
-module.exports.getWishlist = async (userId, currentPage, limitPage) => {
-  const skip = (currentPage - 1) * limitPage;
-
+module.exports.getWishlist = async (userId) => {
   const wishlists = await WishlistsModel.find({
     user_id: userId,
   })
     .populate({
       path: "course_id",
     })
-    .skip(skip)
-    .limit(limitPage)
     .sort({
       _id: -1,
     });
@@ -21,8 +17,7 @@ module.exports.getWishlist = async (userId, currentPage, limitPage) => {
 
   return {
     wishlists: wishlists,
-    currentPage: currentPage,
-    totalItems: totalItems,
+    totalItems: totalItems
   };
 };
 
