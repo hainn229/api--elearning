@@ -10,6 +10,7 @@ const contents = require("./contents");
 const comments = require("./comments");
 const wishlists = require("./wishlists");
 const orders = require("./orders");
+const transactions = require("./transactions");
 
 router.use("/auth", auth);
 router.use("/users", users);
@@ -20,5 +21,6 @@ router.use("/contents", contents);
 router.use("/comments", comments);
 router.use("/wishlists", wishlists);
 router.use("/orders", orders);
+router.use("/transactions", transactions);
 
 module.exports = router;

@@ -231,7 +231,7 @@ module.exports.getCoursesAdmin = async (
   tutor,
   category,
   level,
-  sort,
+  sort
 ) => {
   const skip = (currentPage - 1) * limitPage;
   const query1 = CoursesModel.find({ tutor_id: null });
@@ -385,7 +385,7 @@ module.exports.detailsCourse = (id) => {
       .populate({
         path: "cat_id",
         select: "cat_name",
-      })
+      });
   } catch (err) {
     throw err;
   }

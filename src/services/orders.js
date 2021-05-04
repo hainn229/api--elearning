@@ -1,5 +1,35 @@
 const OrdersModel = require("../models/orders");
 
+module.exports.getOrders = async (currentPage, limitPage, keywords) => {
+  const orders = await OrdersModel.find()
+    .skip((currentPage - 1) * limitPage)
+    .limit(limitPage)
+    .sort({
+      _id: -1,
+    })
+    .populate({
+      path: "course_id",
+      populate: {
+        path: "cat_id",
+        select: "cat_name",
+      },
+    })
+    .populate({
+      path: "course_id",
+      populate: {
+        path: "tutor_id",
+        select: "full_name",
+      },
+    });
+  const totalItems = await OrdersModel.find().countDocuments();
+
+  return {
+    docs: orders,
+    currentPage: currentPage,
+    totalItems: totalItems,
+  };
+};
+
 module.exports.getCart = async (userId, currentPage, limitPage) => {
   const skip = (currentPage - 1) * limitPage;
   const cart = await OrdersModel.find({ user_id: userId, status: false })

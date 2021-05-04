@@ -157,7 +157,6 @@ router.get("/admin", async (req, res) => {
 router.get("/all", checkAuth(true), async (req, res) => {
   try {
     const keywords = req.query.keywords || "";
-
     const courses = await getCourses(keywords);
     return res.status(200).json({
       courses: courses,

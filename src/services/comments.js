@@ -27,6 +27,11 @@ module.exports.getComments = async (courseId, currentPage, limitPage) => {
     };
 };
 
+module.exports.getAllComments = async () => {
+    const comments = await CommentsModel.find();
+    return comments;
+  };
+
 module.exports.addComment = async (commentData) => {
     const data = new CommentsModel(commentData);
     const newComment = await data.save()

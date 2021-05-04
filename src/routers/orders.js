@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const joi = require("joi");
-const { checkAuth } = require("../middlewares/auth");
+const { checkAuth, checkRole } = require("../middlewares/auth");
 const {
+  getOrders,
   getCart,
   addToCart,
   removeFromCart,
@@ -11,6 +12,20 @@ const {
   findOrder,
 } = require("../services/orders");
 
+router.get("/", checkAuth(true), checkRole(true), async (req, res) => {
+  try {
+    const keywords = req.query.keywords || "";
+    const currentPage = parseInt(req.query.currentPage) || 1;
+    const limitPage = parseInt(req.query.limitPage) || 5;
+
+    const orders = await getOrders(currentPage, limitPage, keywords);
+    return res.status(200).json(orders);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+});
 router.get("/:userId", checkAuth(true), async (req, res) => {
   try {
     const userId = req.params.userId;

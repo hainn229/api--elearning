@@ -2,35 +2,43 @@ const axios = require("axios");
 const queryString = require("querystring");
 const TransactionsModel = require("../models//transactions");
 
-module.exports.index = async (currentPage, limitPage, keywords) => {
+module.exports.getTransactions = async (
+  currentPage,
+  limitPage,
+  keywords
+) => {
   const transactions = await TransactionsModel.find()
     .populate({
       path: "user_id",
       match: { email: { $regex: keywords, $options: "" } },
     })
     .limit(limitPage)
-    .page(limitPage * (currentPage - 1))
-    .sort({ _id: -1 });
-
+    .sort({ _id: -1 })
+    .skip(limitPage * (currentPage - 1));
   const totalItems = await TransactionsModel.find()
     .populate({
       path: "user_id",
-      match: { email: { $regex: keywords, $options: "" } },
+      match: { full_name: { $regex: keywords, $options: "" } },
     })
     .countDocuments();
   return {
-    data: transactions,
+    docs: transactions,
     currentPage: currentPage,
     totalItems: totalItems,
   };
 };
+
 
 module.exports.createTransaction = async (data) => {
   const newTransaction = new TransactionsModel(data);
   return await newTransaction.save();
 };
 
-module.exports.getTransactionById = async (userId, currentPage, limitPage) => {
+module.exports.getTransactionsByUserId = async (
+  userId,
+  currentPage,
+  limitPage
+) => {
   const skip = (currentPage - 1) * limitPage;
   const query = TransactionsModel.find({ user_id: userId });
   const transactions = await query
@@ -60,6 +68,12 @@ module.exports.totalTransactions = async () => {
     totalTransactions: totalTransactions,
     totalAmount: totalAmount[0].total,
   };
+};
+
+module.exports.deleteTransaction = async (id) => {
+  return await TransactionsModel.deleteOne({
+    _id: id,
+  });
 };
 
 module.exports.checkPayment = async (paymentId) => {

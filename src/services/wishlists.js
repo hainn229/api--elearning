@@ -6,6 +6,11 @@ module.exports.getWishlist = async (userId) => {
   })
     .populate({
       path: "course_id",
+      populate: { path: "tutor_id" },
+    })
+    .populate({
+      path: "course_id",
+      populate: { path: "cat_id" },
     })
     .sort({
       _id: -1,
@@ -17,7 +22,7 @@ module.exports.getWishlist = async (userId) => {
 
   return {
     wishlists: wishlists,
-    totalItems: totalItems
+    totalItems: totalItems,
   };
 };
 
