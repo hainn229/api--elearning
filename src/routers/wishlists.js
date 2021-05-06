@@ -6,7 +6,7 @@ const {
   getWishlist,
   addToWishlist,
   removeFromWishlist,
-  findCourseInWishlist,
+  findWishlist,
 } = require("../services/wishlists");
 const { findOrder } = require("../services/orders");
 
@@ -49,15 +49,12 @@ router.post("/add", checkAuth(true), async (req, res) => {
             message: "You already own this course !",
           });
     } else {
-      const check = await findCourseInWishlist({
+      const check = await findWishlist({
         user_id: req.body.user_id,
         course_id: req.body.course_id,
       });
       if (check) {
-        return await removeFromWishlist({
-          user_id: req.body.user_id,
-          course_id: req.body.course_id,
-        });
+        return await removeFromWishlist(req.params.id);
       } else {
         const wishlist = await addToWishlist(newWishlist.value);
         return res.status(200).json({

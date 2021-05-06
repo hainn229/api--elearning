@@ -26,17 +26,12 @@ module.exports.getWishlist = async (userId) => {
   };
 };
 
-module.exports.findCourseInWishlist = async (userId, courseId) => {
-  const course = await WishlistsModel.findOne({
-    user_id: userId,
-    course_id: courseId,
-  }).populate({
-    path: "course_id",
-  });
-
-  return {
-    course: course,
-  };
+module.exports.findWishlist = async (wishlistData) => {
+  try {
+    return await WishlistsModel.findOne(wishlistData)
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports.addToWishlist = async (wishlistData) => {
@@ -49,9 +44,8 @@ module.exports.addToWishlist = async (wishlistData) => {
   });
 };
 
-module.exports.removeFromWishlist = (userId, courseId) => {
+module.exports.removeFromWishlist = (id) => {
   return WishlistsModel.deleteOne({
-    user_id: userId,
-    course_id: courseId,
+    _id: id,
   });
 };

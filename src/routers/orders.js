@@ -74,7 +74,6 @@ router.post("/add", checkAuth(true), async (req, res) => {
       user_id: req.body.user_id,
       course_id: req.body.course_id,
     });
-    console.log(order);
     if (order) {
       if (order.status === true) {
         return res
