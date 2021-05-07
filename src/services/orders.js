@@ -20,8 +20,40 @@ module.exports.getOrders = async (currentPage, limitPage, keywords) => {
         path: "tutor_id",
         select: "full_name",
       },
-    });
+    })
+    .populate({ path: "user_id" });
   const totalItems = await OrdersModel.find().countDocuments();
+
+  return {
+    docs: orders,
+    currentPage: currentPage,
+    totalItems: totalItems,
+  };
+};
+
+module.exports.getOrdersSuccess = async (currentPage, limitPage, keywords) => {
+  const orders = await OrdersModel.find({ status: true })
+    .skip((currentPage - 1) * limitPage)
+    .limit(limitPage)
+    .sort({
+      _id: -1,
+    })
+    .populate({
+      path: "course_id",
+      populate: {
+        path: "cat_id",
+        select: "cat_name",
+      },
+    })
+    .populate({
+      path: "course_id",
+      populate: {
+        path: "tutor_id",
+        select: "full_name",
+      },
+    })
+    .populate({ path: "user_id" });
+  const totalItems = await OrdersModel.find({ status: true }).countDocuments();
 
   return {
     docs: orders,
@@ -103,6 +135,25 @@ module.exports.addToCart = async (cartData) => {
   }).populate({
     path: "course_id",
   });
+};
+
+module.exports.detailsOrder = async (id) => {
+  return await OrdersModel.findById(id)
+    .populate({
+      path: "course_id",
+      populate: {
+        path: "cat_id",
+        select: "cat_name",
+      },
+    })
+    .populate({
+      path: "course_id",
+      populate: {
+        path: "tutor_id",
+        select: "full_name",
+      },
+    })
+    .populate({ path: "user_id" });
 };
 
 module.exports.updateStatus = async (id) => {

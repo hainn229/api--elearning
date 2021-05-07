@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 const joi = require("joi");
+const OTPGenerator = require("otp-generator");
+const sendGridMail = require("@sendgrid/mail");
 const { checkAuth, checkRole } = require("../middlewares/auth");
 const {
   Token,
@@ -16,6 +18,8 @@ const {
   deleteUser,
 } = require("../services/users");
 const UsersModel = require("../models/users");
+
+sendGridMail.setApiKey("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");
 
 router.get("/myAccount", checkAuth(true), (req, res) => {
   res.status(200).json(req.user);
@@ -153,7 +157,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.put("/updatePassword", checkAuth(true), async (req, res) => {
+router.post("/updatePassword", checkAuth(true), async (req, res) => {
   try {
     const bodySchema = joi
       .object({
@@ -162,15 +166,15 @@ router.put("/updatePassword", checkAuth(true), async (req, res) => {
       })
       .unknown();
     const data = await bodySchema.validateAsync(req.body);
-    if (data.err) {
-      res.status(400).json({ message: data.err.message });
+    if (data.error) {
+      res.status(400).json({ message: data.error.message });
     }
     const result = await updatePassword(
-      req.body._id,
+      req.body.id,
       req.body.cur_password,
       req.body.new_password
     );
-    if (result.err) {
+    if (!result) {
       return res
         .status(400)
         .json({ message: "Current password is incorrect !" });
@@ -193,5 +197,52 @@ router.delete("/:id", checkAuth(true), checkRole(true), async (req, res) => {
     });
   }
 });
+
+router.post(`/forgotPassword`, async (req, res) => {
+  try {
+    const bodySchema = joi.object({
+      email: joi.string().required('Email address is required!'),
+    }).unknown()
+    const validateEmail = await bodySchema.validateAsync(req.body)
+    if (validateEmail.error) {
+      return res.status(400).json({message: validateEmail.error.message})
+    }
+    const user = await UsersModel.findUserByEmail(req.body.email)
+    if (!user) {
+      res.status(400).json({message: "Cannot find user !"})
+    } else if (user.googleId == null) {
+      return res.status(400).json({message: 'Cannot send OTP, please sign in with Google!'})
+    } else {
+      const newOtp = OTPGenerator.generate(6, { upperCase: false, specialChars: false });
+      sendGridMail.send({
+        to: {
+          email: user.email,
+        },
+        templateId: "d-4bf79d04ca8c4b1b90b5a4a2f33a0df9",
+        dynamicTemplateData: {
+          displayName: user.full_name,
+          OTP: newOtp.toString(),
+        },
+        from: {
+          email: "hainngch17133@fpt.edu.vn",
+          name: "Adminstrator",
+        },
+      })
+      .then(async () => {
+        // await AuthService.forgetPassword(user._id, newPassword.toString());
+        // return res
+        //   .status(200)
+        //   .json({ message: "Please check your email to get password." });
+      })
+      .catch((err) => {
+        return res.status(500).json({ message: err.message });
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+})
 
 module.exports = router;

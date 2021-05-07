@@ -10,6 +10,8 @@ const {
   updateStatus,
   getLibrary,
   findOrder,
+  getOrdersSuccess,
+  detailsOrder
 } = require("../services/orders");
 
 router.get("/", checkAuth(true), checkRole(true), async (req, res) => {
@@ -26,6 +28,35 @@ router.get("/", checkAuth(true), checkRole(true), async (req, res) => {
     });
   }
 });
+
+router.get("/success", checkAuth(true), async (req, res) => {
+  try {
+    const keywords = req.query.keywords || "";
+    const currentPage = parseInt(req.query.currentPage) || 1;
+    const limitPage = parseInt(req.query.limitPage) || 5;
+
+    const orders = await getOrdersSuccess(currentPage, limitPage, keywords);
+    return res.status(200).json(orders);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+
+router.get("/details/:id", checkAuth(true), async (req, res) => {
+  try {
+    const order = await detailsOrder(req.params.id);
+    return res.status(200).json({
+      order: order,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+})
+
 router.get("/:userId", checkAuth(true), async (req, res) => {
   try {
     const userId = req.params.userId;

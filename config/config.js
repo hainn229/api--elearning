@@ -19,4 +19,7 @@ module.exports = {
     auth_provider_x509_cert_url: process.env.FB_AUTH_PROVIDER_X509_CERT_URL || "https://www.googleapis.com/oauth2/v1/certs",
     client_x509_cert_url: process.env.FB_CLIENT_IX509_CERT_URL || "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-h7r3m%40elearning-305907.iam.gserviceaccount.com",
   },
+  sendGridMail: {
+    API_KEY: process.env.API_KEY || "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"
+  } 
 };

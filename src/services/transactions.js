@@ -2,11 +2,7 @@ const axios = require("axios");
 const queryString = require("querystring");
 const TransactionsModel = require("../models//transactions");
 
-module.exports.getTransactions = async (
-  currentPage,
-  limitPage,
-  keywords
-) => {
+module.exports.getTransactions = async (currentPage, limitPage, keywords) => {
   const transactions = await TransactionsModel.find()
     .populate({
       path: "user_id",
@@ -28,10 +24,15 @@ module.exports.getTransactions = async (
   };
 };
 
-
 module.exports.createTransaction = async (data) => {
   const newTransaction = new TransactionsModel(data);
   return await newTransaction.save();
+};
+
+module.exports.detailsTransaction = async (id) => {
+  return await TransactionsModel.findById(id).populate({
+    path: "user_id",
+  });
 };
 
 module.exports.getTransactionsByUserId = async (

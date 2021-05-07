@@ -5,6 +5,7 @@ const { checkAuth, checkRole } = require("../middlewares/auth");
 const {
   getTransactions,
   getTransactionsByUserId,
+  detailsTransaction,
 } = require("../services/transactions");
 
 router.get("/:userId", checkAuth(true), async (req, res) => {
@@ -41,6 +42,19 @@ router.get("/", checkAuth(true), checkRole(true), async (req, res) => {
     });
   }
 });
+
+router.get("/details/:id", checkAuth(true), async (req, res) =>{
+  try {
+    const transaction = await detailsTransaction(req.params.id);
+    return res.status(200).json({
+      transaction: transaction,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+})
 
 
 router.delete("/:id", checkAuth(true), async (req, res) => {
