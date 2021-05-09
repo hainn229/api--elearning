@@ -1,3 +1,4 @@
+require("dotenv").config();
 const axios = require("axios");
 const queryString = require("querystring");
 const TransactionsModel = require("../models//transactions");
@@ -91,9 +92,9 @@ module.exports.checkPayment = async (paymentId) => {
         },
         auth: {
           username:
-            "AZCYHCPLRmzqm38On3hEaSrxzjWM4_g5CZntyPbOxOVgu0DUgkzgc9-giU4tLV33iCDB2Yqd78nBwwjf",
+            process.env.PAYPAL_USERNAME,
           password:
-            "EH5L7NGSUcpFsIkVBHKz9Ndq_L3fWVUZqDvMH8BRgtzdToHz2ZsBN0qBREfxwX5uJSvrVVPBCXnrjAkw",
+            process.env.PAYPAL_PASSWORD,
         },
       }
     );
