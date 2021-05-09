@@ -28,7 +28,7 @@ router.get("/", checkAuth(true), checkRole(true), async (req, res, next) => {
   }
 });
 
-router.get("/all", checkAuth(true), checkRole(true), async (req, res) => {
+router.get("/all", checkAuth(true), async (req, res) => {
   try {
     const users = await getUsers();
     return res.status(200).json({

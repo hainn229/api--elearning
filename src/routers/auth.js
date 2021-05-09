@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
@@ -13,13 +14,14 @@ const {
   findUserByGoogleId,
   updateUser,
   updatePassword,
-  resetPassword,
   getInfo,
   deleteUser,
 } = require("../services/users");
 const UsersModel = require("../models/users");
 
-sendGridMail.setApiKey("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");
+sendGridMail.setApiKey(
+  process.env.SENDGRID_MAIL_API_KEY
+);
 
 router.get("/myAccount", checkAuth(true), (req, res) => {
   res.status(200).json(req.user);
@@ -200,49 +202,72 @@ router.delete("/:id", checkAuth(true), checkRole(true), async (req, res) => {
 
 router.post(`/forgotPassword`, async (req, res) => {
   try {
-    const bodySchema = joi.object({
-      email: joi.string().required('Email address is required!'),
-    }).unknown()
-    const validateEmail = await bodySchema.validateAsync(req.body)
+    const bodySchema = joi
+      .object({
+        email: joi.string().required("Email address is required!"),
+      })
+      .unknown();
+    const validateEmail = await bodySchema.validateAsync(req.body);
     if (validateEmail.error) {
-      return res.status(400).json({message: validateEmail.error.message})
+      return res.status(400).json({ message: validateEmail.error.message });
     }
-    const user = await UsersModel.findUserByEmail(req.body.email)
+    const user = await findUserByEmail(req.body.email);
     if (!user) {
-      res.status(400).json({message: "Cannot find user !"})
+      res.status(400).json({ message: "Cannot find user !" });
     } else if (user.googleId == null) {
-      return res.status(400).json({message: 'Cannot send OTP, please sign in with Google!'})
+      return res
+        .status(400)
+        .json({ message: "Cannot send OTP, please sign in with Google!" });
     } else {
-      const newOtp = OTPGenerator.generate(6, { upperCase: false, specialChars: false });
-      sendGridMail.send({
+      const new_password = OTPGenerator.generate(6, {
+        upperCase: false,
+        specialChars: false,
+      });
+      user.password = new_password;
+      await user.save();
+      // const msg = {
+      //   to: user.email, // Change to your recipient
+      //   from: "hoangpn.dev@gmail.com", // Change to your verified sender
+      //   subject: "OTP verify for Reset Password on E-Learning",
+      //   text: `OTP: ${new_password}`,
+      // };
+
+      const msg = {
         to: {
           email: user.email,
         },
-        templateId: "d-4bf79d04ca8c4b1b90b5a4a2f33a0df9",
+        templateId: "d-d37401f52bd9438cbf8636c8fae78817",
         dynamicTemplateData: {
-          displayName: user.full_name,
-          OTP: newOtp.toString(),
+          full_name: user.full_name,
+          password: new_password.toString(),
         },
         from: {
-          email: "hainngch17133@fpt.edu.vn",
+          email: "hoangpn.dev@gmail.com",
           name: "Adminstrator",
         },
-      })
-      .then(async () => {
-        // await AuthService.forgetPassword(user._id, newPassword.toString());
-        // return res
-        //   .status(200)
-        //   .json({ message: "Please check your email to get password." });
-      })
-      .catch((err) => {
-        return res.status(500).json({ message: err.message });
-      });
+      };
+
+      sendGridMail
+        .send(msg)
+        .then(async () => {
+          console.log("S U C C E S S F U L L Y !");
+          console.log("SEND TO: " + msg.to.email);
+          console.log("NEW PASSWORD: " + new_password);
+          return res
+            .status(200)
+            .json({ message: "Please check your email to get password." });
+        })
+        .catch((err) => {
+          console.log("in: " + err);
+          return res.status(500).json({ message: err.message });
+        });
     }
   } catch (error) {
+    console.log("out: " + error);
     return res.status(500).json({
       message: error.message,
     });
   }
-})
+});
 
 module.exports = router;

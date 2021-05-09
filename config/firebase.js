@@ -4,8 +4,9 @@ const { firebase } = require("./config");
 // Initialize firebase admin SDK
 admin.initializeApp({
   credential: admin.credential.cert(firebase),
-  storageBucket: process.env.STORAGE_BUCKET || 'gs://elearning-305907.appspot.com',
+  storageBucket: process.env.STORAGE_BUCKET,
 });
+
 
 // Cloud storage
 const bucket = admin.storage().bucket();

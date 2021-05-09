@@ -128,29 +128,11 @@ module.exports.updatePassword = async (id, cur_password, new_password) => {
   }
 };
 
-module.exports.resetPassword = async (email, new_password) => {
-  try {
-    const salt = await bcrypt.genSalt(10);
-    new_password = await bcrypt.hash(new_password, salt);
-    await UsersModel.updateOne(
-      {
-        email: email,
-      },
-      {
-        password: new_password,
-      }
-    );
-  } catch (err) {
-    throw err;
-  }
-};
-
 module.exports.deleteUser = (id) => {
   return UsersModel.deleteOne({
-      _id: id
+    _id: id,
   });
 };
-
 
 // Passport
 module.exports.findUserByGoogleId = async (id) => {

@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const logger = require("morgan");
@@ -6,11 +7,10 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const router = require("./src/routers/index");
 const passport = require("passport");
-require("dotenv").config();
 
 const PORT = process.env.PORT || 4000;
 mongoose.connect(
-  "mongodb+srv://UN_admin_elearning1:PW_admin_elearning1@elearning.emrrd.mongodb.net/elearningDB?retryWrites=true&w=majority",
+  process.env.MONGODB_SRV,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
-const firebase = require("../../config/firebase");
+const { firebase } = require("../../config/config");
 const multer = require("multer");
 
 const storage = multer.diskStorage({
